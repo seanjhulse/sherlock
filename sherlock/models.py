@@ -10,15 +10,18 @@ class Packet(models.Model):
     Model fields: https://docs.djangoproject.com/en/3.1/ref/models/fields/
     '''
     
-    # IP Address limited to 39 characters (rounded up)
-    host_ip_address = models.CharField(max_length=39)
-    dest_ip_address = models.CharField(max_length=39)
+    # IP Address limited to 39 characters
+    host_ip_address = models.CharField(max_length=39, default="-1")
+    dest_ip_address = models.CharField(max_length=39, default="-1")
 
     # Port limited to 5 characters
-    port = models.CharField(max_length=5)
+    port = models.CharField(max_length=5, default="-1")
 
-    # Data is just an "unlimited" TextField
-    data = models.TextField
+    # Payload is just an large TextField representing the body of a message
+    payload = models.TextField(default="")
 
     # Should store when this data was published to the database
     pub_date = models.DateTimeField('date published')
+
+    class Meta:
+        managed = True
