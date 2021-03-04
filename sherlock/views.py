@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 import socket
+from .osdata import list_os
 
 # Constants
 MAX_PORT = 65535
@@ -54,3 +55,8 @@ def network_traffic(request, port):
 
     # Return the data in a basic HttpResponse
     return HttpResponse("You're getting network traffic %s on port %s:%s" % (data, ip_address, port))
+
+def network_operating_systems(request):
+    os_dict = list_os()
+    
+    return HttpResponse("The OS on this network are: %s" % (os_dict))
