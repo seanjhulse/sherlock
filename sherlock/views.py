@@ -62,3 +62,7 @@ def network_traffic(request, port):
 
     # Return the data in a basic HttpResponse
     return HttpResponse("You're getting network traffic %s on port %s:%s" % (packet.payload, packet.host_ip_address, packet.port))
+
+
+def network_operating_systems(request):
+    return HttpResponse('The operating systems on this network are: %s' % (list_os()))

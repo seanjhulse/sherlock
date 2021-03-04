@@ -18,13 +18,18 @@ def get_ipaddrs():
 def list_os():
     ips = get_ipaddrs()
     nmap = nmap3.Nmap()
-    results = {}
+    ips_os = {}
+    
+    
     for ip in ips:
         detection_dict = nmap.nmap_os_detection(ip)
-        results.update({ip: detection_dict[ip]['osmatch']})
+        ips_os.update({ip: detection_dict[str(ip)]['osmatch'][0]})
+    
     # returns dictionary in form {'private IP address' : os information dictionary}
-    return results
 
+    for ip, os_info in ips_os.items():
+        print(f'Ip address: {ip}, os info: {os_info}')
+    
+    return ips_os
 
-
-
+list_os()
