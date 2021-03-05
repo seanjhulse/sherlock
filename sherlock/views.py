@@ -5,6 +5,7 @@ from sherlock.models import Packet
 
 import socket
 from .osdata import list_os
+import nmap
 
 # Constants
 MAX_PORT = 65535
@@ -95,3 +96,21 @@ def local_ports(end_port=1024):
 
 def network_operating_systems(request):
     return HttpResponse('The operating systems on this network are: %s' % (list_os()))
+
+def host_scan_all(request, ipaddress):
+	""" Scan an ipaddress for other hosts """
+	
+	nm = nmap.PortScanner()
+	
+	scan_info = nm.scan(ipaddress)
+	
+	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
+
+def host_scan(request, ipaddress, portrange):
+	""" Scan an ipaddress for other hosts """
+	
+	nm = nmap.PortScanner()
+	
+	scan_info = nm.scan(ipaddress, portrange)
+	
+	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
