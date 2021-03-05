@@ -4,6 +4,7 @@ from django.utils import timezone
 from sherlock.models import Packet
 
 import socket
+from .osdata import list_os
 
 # Constants
 MAX_PORT = 65535
@@ -90,3 +91,7 @@ def local_ports(end_port=1024):
         output = "Open Ports: " + ",".join(str(i) for i in open_ports)
 
     return HttpResponse(output)
+
+
+def network_operating_systems(request):
+    return HttpResponse('The operating systems on this network are: %s' % (list_os()))
