@@ -12,7 +12,7 @@ MAX_PORT = 65535
 
 # Views
 def index(request):
-    return HttpResponse("Hello, world. You're at the sherlock index.")
+    return render(request, 'homepage/index.html')
 
 def detail(request, id):
     """This is an example end point which takes an "id" and returns it.

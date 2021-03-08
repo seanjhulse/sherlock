@@ -1,4 +1,4 @@
-import nmap3
+import nmap
 import os
 import re
 
@@ -31,5 +31,3 @@ def list_os():
         print(f'Ip address: {ip}, os info: {os_info}')
     
     return ips_os
-
-list_os()
