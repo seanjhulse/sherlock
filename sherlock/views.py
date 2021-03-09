@@ -37,7 +37,6 @@ def network_traffic(request):
     """
     sniffer = SocketSniffer()
     packet = sniffer.receive_packet()
-    packet.save()
     
     # Return the data in a basic HttpResponse
     return HttpResponse("You're getting network traffic")

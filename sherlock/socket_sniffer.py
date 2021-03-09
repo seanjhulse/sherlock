@@ -4,7 +4,6 @@ from struct import *
 from django.utils import timezone
 from sherlock.models import Packet
 
-
 # Source: https://www.binarytides.com/python-packet-sniffer-code-linux/
 class SocketSniffer:
 
@@ -103,7 +102,7 @@ class SocketSniffer:
                 code = icmph[1]
                 checksum = icmph[2]
                 
-                print('Type : ' + str(icmp_type) + ' Code : ' + str(code) + ' Checksum : ' + str(checksum))
+                # print('Type : ' + str(icmp_type) + ' Code : ' + str(code) + ' Checksum : ' + str(checksum))
                 
                 h_size = eth_length + iph_length + icmph_length
                 data_size = len(packet) - h_size
@@ -128,7 +127,7 @@ class SocketSniffer:
                 length = udph[2]
                 checksum = udph[3]
                 
-                print('Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port) + ' Length : ' + str(length) + ' Checksum : ' + str(checksum))
+                # print('Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port) + ' Length : ' + str(length) + ' Checksum : ' + str(checksum))
                 
                 h_size = eth_length + iph_length + udph_length
                 data_size = len(packet) - h_size
