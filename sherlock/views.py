@@ -63,3 +63,15 @@ def host_scan(request, ipaddress, portrange):
 	scan_info = nm.scan(ipaddress, portrange)
 	
 	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
+
+
+def web_sockets_example(request):
+    """Provides a sample websocket connection
+
+    Args:
+        request (request): renders a simple web socket application
+
+    Returns:
+        HTML
+    """
+    return render(request, 'examples/websockets/index.html')
