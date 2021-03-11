@@ -86,7 +86,6 @@ def host_scan(request, ipaddress, portrange):
 	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
 
 
-
 def local_ports(request):
     """Scan all local ports 
 
@@ -106,3 +105,14 @@ def local_ports(request):
         test_socket.close()
 
     return HttpResponse(",".join(str(i) for i in open_ports))
+
+def web_sockets_example(request):
+    """Provides a sample websocket connection
+
+    Args:
+        request (request): renders a simple web socket application
+
+    Returns:
+        HTML
+    """
+    return render(request, 'examples/websockets/index.html')
