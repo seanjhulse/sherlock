@@ -4,7 +4,6 @@ from django.utils import timezone
 from sherlock.models import Packet
 
 import socket
-from .osdata import list_os
 import nmap
 
 # Constants
@@ -85,3 +84,25 @@ def host_scan(request, ipaddress, portrange):
 	scan_info = nm.scan(ipaddress, portrange)
 	
 	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
+
+
+
+def local_ports(request):
+    """Scan all local ports 
+
+    Args: 
+       request (Object): [description]
+    Returns:
+      comma separated list in HttpResponse
+    """
+    open_ports = []
+
+    for port in range(0,65535):
+        test_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = test_socket.connect_ex(("127.0.0.1", port))
+
+        if result == 0:
+            open_ports.append(port)
+        test_socket.close()
+
+    return HttpResponse(",".join(str(i) for i in open_ports))
