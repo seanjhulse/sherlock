@@ -8,5 +8,7 @@ class SherlockConfig(AppConfig):
         if 'runserver' not in sys.argv:
             return True
 
-        from .jobs import jobs
-        jobs.start()
+        # Uncomment the next two lines if you want a background process
+        # constantly add network data to the database.
+        # from .jobs import jobs
+        # jobs.start()
