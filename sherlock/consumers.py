@@ -22,11 +22,12 @@ class NetworkDataConsumer(AsyncWebsocketConsumer):
             # Sleep for one second(s)
             await asyncio.sleep(0.25)
 
-            # Get packets that have appeared 1 second(s) ago
+            # Get packets that have appeared recently
             packet = await self.get_packets()
-            packets = []
-            packets.append(packet)
-            if len(packets) > 0:
+            if packet is not None:
+                packets = []
+                packets.append(packet)
+
                 # Serialize the packets to JSON data
                 json_packets = await self.serialize_packets(packets)
 
