@@ -1,28 +1,45 @@
 import json
 import time
-from channels.generic.websocket import WebsocketConsumer
+import datetime
+import asyncio
+from asgiref.sync import sync_to_async
+from django.core import serializers
+from channels.generic.websocket import AsyncWebsocketConsumer
+from sherlock.models import Packet
+from .socket_sniffer import SocketSniffer
 
-class NetworkDataConsumer(WebsocketConsumer):
-    def connect(self):
-        self.accept()
+class NetworkDataConsumer(AsyncWebsocketConsumer):
+
+    async def connect(self):
+        # Accept the connection
+        await self.accept()
 
         self.connected = True
 
-        data = 0
+        # While we are connected...
         while self.connected:
-            print("sending data: %s", data)
-            time.sleep(1)
-            self.send(text_data=json.dumps({
-                'message': data
-            }))
-            data += 1
 
-    def disconnect(self, close_code):
+            # Sleep for one second(s)
+            await asyncio.sleep(0.25)
+
+            # Get packets that have appeared 1 second(s) ago
+            packet = await self.get_packets()
+            packets = []
+            packets.append(packet)
+            if len(packets) > 0:
+                # Serialize the packets to JSON data
+                json_packets = await self.serialize_packets(packets)
+
+                # Send the packets as a JSON object ("message": [Array of Packets])
+                await self.send(text_data=json.dumps({
+                    "message": json_packets
+                }))
+
+    async def disconnect(self):
         self.connected = False
-        print("\ndisconnected from network stream\n")
-        pass
+        print("\nDisconnected from network stream")
 
-    def receive(self, text_data):
+    async def receive(self):
         pass
         # text_data_json = json.loads(text_data)
         # message = text_data_json['message']
@@ -30,3 +47,13 @@ class NetworkDataConsumer(WebsocketConsumer):
         # self.send(text_data=json.dumps({
         #     'message': message
         # }))
+
+    @sync_to_async
+    def get_packets(self):
+        self.socket_sniffer = SocketSniffer()
+        return self.socket_sniffer.receive_packet()
+        
+
+    @sync_to_async
+    def serialize_packets(self, packets):
+        return serializers.serialize("json", packets)
