@@ -3,9 +3,9 @@ from django.http import HttpResponse
 from django.utils import timezone
 from sherlock.models import Packet
 
+import socket
 import nmap
 from .osdata import list_os
-from .socket_sniffer import SocketSniffer 
 
 # Views
 def index(request):
@@ -56,6 +56,26 @@ def host_scan(request, ipaddress, portrange):
 	
 	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
 
+
+def local_ports(request):
+    """Scan all local ports 
+
+    Args: 
+       request (Object): [description]
+    Returns:
+      comma separated list in HttpResponse
+    """
+    open_ports = []
+
+    for port in range(0,65535):
+        test_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = test_socket.connect_ex(("127.0.0.1", port))
+
+        if result == 0:
+            open_ports.append(port)
+        test_socket.close()
+
+    return HttpResponse(",".join(str(i) for i in open_ports))
 
 def web_sockets_example(request):
     """Provides a sample websocket connection
