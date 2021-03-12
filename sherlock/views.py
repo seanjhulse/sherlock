@@ -7,9 +7,6 @@ import nmap
 from .osdata import list_os
 from .socket_sniffer import SocketSniffer 
 
-# Constants
-MAX_PORT = 65535
-
 # Views
 def index(request):
     return HttpResponse("Hello, world. You're at the sherlock index.")
@@ -35,12 +32,7 @@ def network_traffic(request):
     Returns:
         HttpResponse: an HTTP response of packet data for the request
     """
-    sniffer = SocketSniffer()
-    packet = sniffer.receive_packet()
-    
-    # Return the data in a basic HttpResponse
-    return HttpResponse("You're getting network traffic")
-    # return HttpResponse("You're getting network traffic %s on port %s:%s" % (packet.payload, packet.host_ip_address, packet.port))
+    return render(request, 'examples/websockets/index.html')
 
 
 def network_operating_systems(request):

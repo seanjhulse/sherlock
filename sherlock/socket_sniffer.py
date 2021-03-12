@@ -87,6 +87,7 @@ class SocketSniffer:
                 data = packet[h_size:]
 
                 packet = Packet(source_ip_address=s_addr, destination_ip_address=d_addr, header_length=iph_length, ttl=ttl, protocol=protocol, source_port=source_port, destination_port=dest_port, acknowledgement=acknowledgement, payload=data, pub_date=timezone.now())
+                
                 return packet
                 
             # ICMP Packets
