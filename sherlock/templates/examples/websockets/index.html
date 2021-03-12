@@ -10,6 +10,36 @@
     <img width=25 height=25 src="{% static 'images/heart.png' %}"></script>
 
     This should stream data below:
-    <div id="data"></div>
+    <table>
+        <thead>
+            <th>
+                Source IP Address
+            </th>
+            <th>
+                Destination IP Address
+            </th>
+            <th>
+                Source Port
+            </th>
+            <th>
+                Destination Port
+            </th>
+            <th>
+                TTL
+            </th>
+            <th>
+                Protocol
+            </th>
+            <th>
+                Sequence Number
+            </th>
+            <th>
+                Data
+            </th>
+        </thead>
+        <tbody id="table-data">
+            
+        </tbody>
+    </table>
 </body>
 </html>
