@@ -12,11 +12,9 @@ MAX_PORT = 65535
 
 # Views
 def index(request):
-    # return HttpResponse("Hello, world. You're at the sherlock index.")
 	return render(request, 'homepage/index.html')
-	# return render(request, 'homepage/main.html')
 
-def page_one(request):
+def node_map(request):
     return render(request, 'homepage/cytoscape.html', {})
 
 def detail(request, id):
@@ -30,6 +28,9 @@ def detail(request, id):
         HttpResponse: an HTTP response of the id in the request
     """
     return HttpResponse("You're looking at object %s." % id)
+
+def net_traf(request):
+    return render(request, 'homepage/network-traffic.html', {})
 
 def network_traffic(request, port):
     """Gets network traffic from a port and returns its data

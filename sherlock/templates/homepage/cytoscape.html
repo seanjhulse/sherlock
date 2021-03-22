@@ -1,119 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <title>Node Map</title>
 
-	<head>
-		<title>cytoscape-cola.js demo</title>
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1"
+    />
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
 
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
-		
-		<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <!-- for testing with local version of cytoscape.js -->
+    <!--<script src="../cytoscape.js/build/cytoscape.js"></script>-->
 
-		<!-- for testing with local version of cytoscape.js -->
-		<!--<script src="../cytoscape.js/build/cytoscape.js"></script>-->
+    <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
 
-		<script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+	{% load static %}
+    <script
+      src="{% static 'scripts/cytoscape-cola.js' %}"
+      type="text/javascript"
+    ></script>
 
-		{% load static %}
-		<script src="{% static 'scripts/cytoscape-cola.js' %}" type="text/javascript"></script>
+    <link rel="stylesheet" href="{% static 'css/cyto-styles.css' %}" />
 
-		<style>
-			body {
-				font-family: helvetica;
-				font-size: 14px;
-			}
+    <script
+      src="{% static 'scripts/cyto-js.js' %}"
+      type="text/javascript"
+    ></script>
 
-			#cy {
-				width: 100%;
-				height: 100%;
-				position: absolute;
-				left: 0;
-				top: 0;
-				z-index: 999;
-			}
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
 
-			h1 {
-				opacity: 0.5;
-				font-size: 1em;
-			}
-		</style>
+  <body>
+	  <!-- Navigation Bar -->
+	  <nav class="navbar">
+		<div class="navbar__container">
+		  <a href="/" id="navbar__logo"
+			><img
+			  width="75"
+			  height="75"
+			  src="{% static 'images/SherLOCK - App Logo.png' %}"
+			/>SherLOCK</a
+		  >
+  
+		  <!-- Hamburger Button -->
+		  <div class="navbar__toggle" id="mobile-menu">
+			<span class="bar"></span>
+			<span class="bar"></span>
+			<span class="bar"></span>
+		  </div>
+  
+		  <!--Top Navbar Items-->
+		  <ul class="navbar__menu">
+			<!--Home Button-->
+			<li class="navbar__item">
+			  <a href="/" class="navbar__links"> Home </a>
+			</li>
 
-		<script>
-			document.addEventListener('DOMContentLoaded', function(){
+		  </ul>
+		</div>
+	  </nav>
 
-				var cy = window.cy = cytoscape({
-					container: document.getElementById('cy'),
+	  <!-- Main Section -->
+	  <div class="main">
+		<div class="main__container">
+		  <div class="main__content">
+			
+		  </div>
+		</div>
+		<!--End Of 'main_container'-->
+	  </div>
+	  <!--End Of 'main'-->
 
-					autounselectify: true,
-					
-					boxSelectionEnabled: false,
+	<div id="cy"></div>
 
-					layout: {
-						name: 'cola'
-					},
-
-					style: [
-						{
-							selector: 'node',
-							css: {
-								'background-color': '#f92411'
-							}
-						},
-
-						{
-							selector: 'edge',
-							css: {
-								'line-color': '#f92411'
-							}
-						}
-					],
-
-					elements: {
-					  nodes: [
-					    {
-					      data: {
-					        id: "1",
-					        label: "You"
-					      }
-					    },
-					    {
-					      data: {
-					        id: "2",
-					        label: "Google"
-					      }
-					    },
-					    {
-					      data: {
-					        id: "4",
-					        label: "Amazon"
-					      }
-					    }
-					  ],
-					  edges: [
-					    {
-					      data: {
-					        source: "2",
-					        target: "1"
-					      }
-					    },
-					    {
-					      data: {
-					        source: "4",
-					        target: "1"
-					      }
-					    }
-					  ]
-					}
-				});
-
-			});
-		</script>
-	</head>
-
-	<body>
-		<h1>cytoscape-cola demo</h1>
-
-		<div id="cy"></div>
-
-	</body>
-
+	<script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
+  </body>
 </html>
