@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SherLOCK - Home</title>
+
+    <!--Overall Styling for Webpage-->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+
+    <!--Google Font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="navbar__container">
+        <a href="/" id="navbar__logo"
+          ><img
+            width="75"
+            height="75"
+            src="{% static 'images/SherLOCK - App Logo.png' %}"
+          />SherLOCK</a
+        >
+
+        <!-- Hamburger Button -->
+        <div class="navbar__toggle" id="mobile-menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+
+        <!--Top Navbar Items-->
+        <ul class="navbar__menu">
+          <!--Home Button-->
+          <li class="navbar__item">
+            <a href="/" class="navbar__links"> Home </a>
+          </li>
+
+          <!--Link to Cytoscape-->
+          <li class="navbar__item">
+            <a href="/node-map" class="navbar__links"> Node Map </a>
+          </li>
+
+          <!--Link to Network Traffic-->
+          <li class="navbar__item">
+            <a href="/network-traffic" class="navbar__links"> Network Traffic </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Section -->
+    <div class="main">
+      <div class="main__container">
+        <div class="main__content">
+          <h1>SherLOCK</h1>
+          <h2>Technology</h2>
+          <p>For Your Holmes Network</p>
+
+          <!--Do something with this button-->
+          <button class="main__btn">
+            <a href="/">Get Started</a>
+          </button>
+        </div>
+
+        <div class="main__img--container">
+          <img src="{% static 'images/pic1.svg' %}" alt="pic" id="main__img" />
+        </div>
+      </div>
+      <!--End Of 'main_container'-->
+    </div>
+    <!--End Of 'main'-->
+
+    <!-- Nother Section -->
+    <script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
+  </body>
+</html>

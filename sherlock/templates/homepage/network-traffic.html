@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SherLOCK - Home</title>
+
+    <!--Overall Styling for Webpage-->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+
+    <!--Google Font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="text/javascript">
+        function port_pass()
+        {
+            var str = document.getElementById("port_num").value;
+            
+        }
+    </script>
+  </head>
+
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="navbar__container">
+        <a href="/" id="navbar__logo"
+          ><img
+            width="75"
+            height="75"
+            src="{% static 'images/SherLOCK - App Logo.png' %}"
+          />SherLOCK</a
+        >
+
+        <!-- Hamburger Button -->
+        <div class="navbar__toggle" id="mobile-menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+
+        <!--Top Navbar Items-->
+        <ul class="navbar__menu">
+          <!--Home Button-->
+          <li class="navbar__item">
+            <a href="/" class="navbar__links"> Home </a>
+          </li>
+
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Section -->
+    <div class="main">
+        <div class="main__container">
+          <div class="main__content">
+            <!--Text box input-->
+            <input id="port_num" placeholder="Type a Port Number">
+            <br>
+            <button id="submit_port" class="main__btn">
+                <a>Inspect</a>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    <!-- Nother Section -->
+    <script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
+  </body>
+</html>
