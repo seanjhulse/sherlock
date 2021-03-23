@@ -14,4 +14,5 @@ urlpatterns = [
 	path('host-scan/<str:ipaddress>/<str:portrange>', views.host_scan, name='host-scan'),
     path('local-ports/', views.local_ports, name="local-ports"),
     url('node-map', views.node_map, name='node-map'),
+    url('host-node', views.host_node, name='host-node'),
 ]

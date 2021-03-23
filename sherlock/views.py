@@ -14,6 +14,9 @@ def index(request):
 def node_map(request):
     return render(request, 'homepage/cytoscape.html', {})
 
+def host_node(request):
+    return render(request, 'host-node/host-node.html', {})
+
 def detail(request, id):
     """This is an example end point which takes an "id" and returns it.
 
@@ -46,20 +49,20 @@ def network_operating_systems(request):
 
 def host_scan_all(request, ipaddress):
 	""" Scan an ipaddress for other hosts """
-	
+
 	nm = nmap.PortScanner()
-	
+
 	scan_info = nm.scan(ipaddress)
-	
+
 	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
 
 def host_scan(request, ipaddress, portrange):
 	""" Scan an ipaddress for other hosts """
-	
+
 	nm = nmap.PortScanner()
-	
+
 	scan_info = nm.scan(ipaddress, portrange)
-	
+
 	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
 
 
