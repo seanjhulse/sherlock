@@ -4,7 +4,9 @@
 
 <head>
     <title>Host Page</title>
-    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.umd.js"></script>
+	{% load static %}
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 </head>
 
 <style>
@@ -19,6 +21,46 @@
 </style>
 
 <body>
+	<!-- Navigation Bar -->
+	  <nav class="navbar">
+		<div class="navbar__container">
+		  <a href="/" id="navbar__logo"
+			><img
+			  width="75"
+			  height="75"
+			  src="{% static 'images/SherLOCK - App Logo.png' %}"
+			/>SherLOCK</a
+		  >
+  
+		  <!-- Hamburger Button -->
+		  <div class="navbar__toggle" id="mobile-menu">
+			<span class="bar"></span>
+			<span class="bar"></span>
+			<span class="bar"></span>
+		  </div>
+  
+		  <!--Top Navbar Items-->
+		  <ul class="navbar__menu">
+			<!--Home Button-->
+			<li class="navbar__item">
+			  <a href="/" class="navbar__links"> Home </a>
+			</li>
+
+		  </ul>
+		</div>
+	  </nav>
+
+	  <!-- Main Section -->
+	  <div class="main">
+		<div class="main__container">
+		  <div class="main__content">
+			
+		  </div>
+		</div>
+		<!--End Of 'main_container'-->
+	  </div>
+	  <!--End Of 'main'-->
+	
     <div id="cy"></div>
     <script>
         
@@ -137,10 +179,10 @@
         //run .layout() to organize nodes.        
 	    
         cy.layout({
-		    name: 'concentric'
+		    name: 'concentric',
+			minDist: 40			
 		}).run();
     
     </script>
 </body>
 </html>
-
