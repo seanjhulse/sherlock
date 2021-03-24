@@ -8,7 +8,7 @@ from platform import system
 
 import socket
 import nmap
-from .osdata import get_op_sys, get_ip, map_net
+from .osdata import get_op_sys, get_ip, map_net, scan_network
 
 from json import dumps
 
@@ -17,7 +17,7 @@ def index(request):
 	return render(request, 'homepage/index.html')
 
 def node_map(request):
-    return render(request, 'homepage/cytoscape.html', {})
+    return render(request, 'homepage/node-map.html', {})
 
 def host_node(request):
     return render(request, 'host-node/host-node.html', {})
@@ -107,15 +107,16 @@ def localpage(request):
     
     ports = local_ports(request)
     ports = dumps(ports)
-    ip = get_ip() 
+    my_ip = get_ip() 
     other_ips = map_net()
-    print(other_ips)
-    for current in other_ips:
-        if current == ip:
-            other_ips.remove(current)
+    other_hosts = []
+
+    for other_ip in other_ips:
+        if my_ip == other_ip:
+            other_ips.remove(other_ip)
             break
+        
+        other_hosts.append(scan_network(other_ip))
     
-    other_ips = dumps(other_ips).replace("\"", "")
-    other_ips = other_ips.replace(".","")
-    context = {'ports': ports, 'os': system(), 'ip': ip, 'others': other_ips}
-    return render(request, 'localpage/localhost.html', {'context': context})
+    context = {'ports': ports, 'os': system(), 'ip': my_ip, 'others': other_hosts}
+    return render(request, 'localpage/localhost.html', {'context': dumps(context)})

@@ -1,0 +1,153 @@
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Get the data injected inside the div #data and parse it as JSON
+    const dataNode = document.getElementById("data");
+
+    // Do some hacky clean up
+    dataNode.dataset.context = dataNode.dataset.context.replaceAll("'", "\"")
+
+    const data = JSON.parse(dataNode.dataset.context);
+    console.log(data)
+
+    _nodeColor = '#F9F9F9';
+    _otherHosts = data.others;
+    _ips = []
+
+    console.log("other hosts: " + _otherHosts);
+
+    // create and append nodes under list 'element'
+    Object.values(_otherHosts).forEach(obj => Object.keys(obj.scan).forEach(ip => _ips.push(ip)));
+
+    // for (var i = 0; i < _ports.length; i++){
+    //     _style.push({
+    // selector: '#port'+_ports[i],
+    // style: {
+    // 	shape: 'roundrectangle',
+    // 	width: 85,
+    // 	height: 85,
+    // 	'background-image' : _portIcon,
+    //             'background-color' : _nodeColor,
+    // 	label: "port " + _ports[i],
+    //             'color': _nodeColor,
+    // }
+    //     });
+    // }
+
+    // Start with the localhost
+    var _elements = [{ data: { id: "host" }}];
+
+    var _style = [{
+        selector: '#host', //#tag name to select node
+        style: {
+            shape: 'roundrectangle',
+            width: 128,
+            height: 128,
+            'background-image': getIcon(data.os),
+            'background-color': _nodeColor,
+            label: data.ip,
+            'color': _nodeColor,
+        },
+    }];
+
+
+    _ips.forEach(ip => {
+
+        const stringifiedIp = ip.replaceAll('.', '');
+
+        // Add the node
+        _elements.push({
+            data: {
+                id: "other-" + stringifiedIp,
+            }
+        });
+
+        // Add the Edge
+        _elements.push({
+            data: {
+                id: 'edge-' + stringifiedIp,
+                source: "host",
+                target: "other-" + stringifiedIp
+            }
+        });
+
+        data.others.forEach(host => {
+            if (host.scan[`${ip}`])
+            {
+                console.log()
+                const firstOSMatch = host.scan[`${ip}`]['osmatch'][0];
+                // Add the styling
+                _style.push({
+                    selector: `#other-${stringifiedIp}`,
+                    style: {
+                        shape: 'roundrectangle',
+                        width: 125,
+                        height: 125,
+                        'background-image': getIcon(firstOSMatch.name),
+                        'background-color': _nodeColor,
+                        label: ip + " - " + firstOSMatch.name,
+                        color: _nodeColor
+                    }
+                });
+            }
+        })
+
+        
+    });
+
+    //RUN CYTOSCAPE
+    var cy = cytoscape({
+        container: document.getElementById('localhost'),
+        style: _style,
+        elements: _elements
+    });
+
+    //Connect nodes to host using .add(). may move node creation up to the initial
+    //object creation later, but for now will just use this
+    //need to figure out how to make nodes longer
+
+    // for (var i = 0; i < _ports.length; i++){
+
+    //     var source = 'port' + _ports[i];
+    //     cy.add({
+    //         data: {
+    //             id: 'edge' + i,
+    //             source: source,
+    //             target: 'host',
+    //         },
+    //   });
+    // }
+
+    //run .layout() to organize nodes.        
+
+    cy.layout({
+        name: 'concentric'
+    }).run();
+});
+
+
+function getIcon(os) {
+    _osIcon = "../../static/images/default-logo.png";
+
+    switch (os) {
+
+        case "Windows":
+            _osIcon = "../../static/images/windows-10-icon.png";
+            break;
+        case "Darwin":
+            _osIcon = "../../static/images/ios-icon.png";
+            break;
+        case "Linux":
+            _osIcon = "../../static/images/linux-icon.png";
+            break;
+        case "Android":
+            _osIcon = "../../static/images/android-icon.png";
+            break;
+        case "Chrome OS":
+            _osIcon = "../../static/images/chrome-os-icon.png";
+            break;
+        default:
+            _osIcon = "../../static/images/default-icon.png";
+    }
+
+    return _osIcon
+}

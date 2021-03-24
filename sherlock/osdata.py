@@ -6,14 +6,11 @@ import socket
 import subprocess
 import multiprocessing
 
-
-
 # deprecated method,must refactor at a later date
 def list_os():
     ips = map_net()
     nmap3 = nmap.Nmap()
     ips_os = {}
-    
     
     for ip in ips:
         detection_dict = nmap.nmap_os_detection(ip)
@@ -77,3 +74,7 @@ def get_ip():
     finally: 
         s.close()
     return ip
+
+def scan_network(ip):
+    nm = nmap.PortScanner()
+    return nm.scan(hosts=ip, arguments='-O -T5 -n --max-parallelism=255 --min-parallelism=100')
