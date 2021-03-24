@@ -9,7 +9,10 @@ from .osdata import list_os
 
 # Views
 def index(request):
-    return HttpResponse("Hello, world. You're at the sherlock index.")
+	return render(request, 'homepage/index.html')
+
+def node_map(request):
+    return render(request, 'homepage/cytoscape.html', {})
 
 def detail(request, id):
     """This is an example end point which takes an "id" and returns it.
@@ -23,8 +26,11 @@ def detail(request, id):
     """
     return HttpResponse("You're looking at object %s." % id)
 
-def network_traffic(request):
-    """Gets network traffic
+def net_traf(request):
+    return render(request, 'homepage/network-traffic.html', {})
+
+def network_traffic(request, port):
+    """Gets network traffic from a port and returns its data
     
     Args:
         request (Object): [description]
