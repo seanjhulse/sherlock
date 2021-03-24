@@ -1,11 +1,16 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import timezone
+from django.core import serializers
+
 from sherlock.models import Packet
+from platform import system
 
 import socket
 import nmap
-from .osdata import list_os
+from .osdata import get_op_sys, get_ip, map_net
+
+from json import dumps
 
 # Views
 def index(request):
@@ -45,7 +50,7 @@ def network_traffic(request, port):
 
 
 def network_operating_systems(request):
-    return HttpResponse('The operating systems on this network are: %s' % (list_os()))
+    return HttpResponse('The operating systems on this network are: %s' % (get_op_sys(map_net())))
 
 def host_scan_all(request, ipaddress):
 	""" Scan an ipaddress for other hosts """
@@ -54,7 +59,7 @@ def host_scan_all(request, ipaddress):
 
 	scan_info = nm.scan(ipaddress)
 
-	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
+	return scan_info['scan'] 
 
 def host_scan(request, ipaddress, portrange):
 	""" Scan an ipaddress for other hosts """
@@ -84,7 +89,8 @@ def local_ports(request):
             open_ports.append(port)
         test_socket.close()
 
-    return HttpResponse(",".join(str(i) for i in open_ports))
+    # return HttpResponse(",".join(str(i) for i in open_ports))
+    return open_ports
 
 def web_sockets_example(request):
     """Provides a sample websocket connection
@@ -96,3 +102,20 @@ def web_sockets_example(request):
         HTML
     """
     return render(request, 'examples/websockets/index.html')
+
+def localpage(request):
+    
+    ports = local_ports(request)
+    ports = dumps(ports)
+    ip = get_ip() 
+    other_ips = map_net()
+    print(other_ips)
+    for current in other_ips:
+        if current == ip:
+            other_ips.remove(current)
+            break
+    
+    other_ips = dumps(other_ips).replace("\"", "")
+    other_ips = other_ips.replace(".","")
+    context = {'ports': ports, 'os': system(), 'ip': ip, 'others': other_ips}
+    return render(request, 'localpage/localhost.html', {'context': context})
