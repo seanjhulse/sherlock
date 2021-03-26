@@ -77,6 +77,7 @@ class SocketSniffer:
                 dest_port = tcph[1]
                 sequence = tcph[2]
                 acknowledgement = tcph[3]
+
                 doff_reserved = tcph[4]
                 tcph_length = doff_reserved >> 4
                                 
@@ -86,7 +87,7 @@ class SocketSniffer:
                 # get data from the packet
                 data = packet[h_size:]
 
-                packet = Packet(source_ip_address=s_addr, destination_ip_address=d_addr, header_length=iph_length, ttl=ttl, protocol=protocol, source_port=source_port, destination_port=dest_port, acknowledgement=acknowledgement, payload=data, pub_date=timezone.now())
+                packet = Packet(source_ip_address=s_addr, destination_ip_address=d_addr, header_length=iph_length, ttl=ttl, protocol=protocol, source_port=source_port, destination_port=dest_port, sequence_number=sequence, acknowledgement=acknowledgement, payload=data, pub_date=timezone.now())
                 
                 return packet
                 

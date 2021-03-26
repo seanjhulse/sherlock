@@ -8,7 +8,10 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from sherlock.models import Packet
 from .socket_sniffer import SocketSniffer
 
+sniffer = SocketSniffer()
+
 class NetworkDataConsumer(AsyncWebsocketConsumer):
+
 
     async def connect(self):
         # Accept the connection
@@ -18,15 +21,18 @@ class NetworkDataConsumer(AsyncWebsocketConsumer):
 
         # While we are connected...
         while self.connected:
-
             # Sleep for one second(s)
-            await asyncio.sleep(0.25)
+            await asyncio.sleep(0.01)
 
             # Get packets that have appeared recently
-            packet = await self.get_packets()
+            # packet = await self.get_packets()
+            packet = sniffer.receive_packet()
             if packet is not None:
                 packets = []
                 packets.append(packet)
+                
+                # Save the packet to the database
+                self.save_packets(packet)
 
                 # Serialize the packets to JSON data
                 json_packets = await self.serialize_packets(packets)
@@ -51,9 +57,15 @@ class NetworkDataConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def get_packets(self):
-        self.socket_sniffer = SocketSniffer()
-        return self.socket_sniffer.receive_packet()
-        
+        return sniffer.receive_packet()
+
+    @sync_to_async
+    def save_packets(self, packet):
+        try:
+            # Save the packet to the database
+            packet.save()
+        except Exception as e:
+            print("Failed to save the packet: {}", e)
 
     @sync_to_async
     def serialize_packets(self, packets):

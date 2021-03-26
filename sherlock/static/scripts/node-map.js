@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function () {
         graph.push(edges);
       }
 
-      console.log(graph);
       nodeMap.add(graph);
 
       if (!isGraphCentered) {
@@ -133,8 +132,6 @@ function createNode(id) {
       radius = radius * 1.25;
     }
   }
-
-  console.log(theta);
 
   return {
     group: 'nodes',
