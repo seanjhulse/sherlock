@@ -10,5 +10,5 @@ class SherlockConfig(AppConfig):
 
         # Uncomment the next two lines if you want a background process
         # constantly add network data to the database.
-        # from .jobs import jobs
-        # jobs.start()
+        from .jobs import jobs
+        jobs.start()

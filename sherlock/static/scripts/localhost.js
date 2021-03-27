@@ -7,31 +7,10 @@ document.addEventListener('DOMContentLoaded', function () {
     dataNode.dataset.context = dataNode.dataset.context.replaceAll("'", "\"")
 
     const data = JSON.parse(dataNode.dataset.context);
-    console.log(data)
 
     _nodeColor = '#F9F9F9';
-    _otherHosts = data.others;
-    _ips = []
-
-    console.log("other hosts: " + _otherHosts);
-
-    // create and append nodes under list 'element'
-    Object.values(_otherHosts).forEach(obj => Object.keys(obj.scan).forEach(ip => _ips.push(ip)));
-
-    // for (var i = 0; i < _ports.length; i++){
-    //     _style.push({
-    // selector: '#port'+_ports[i],
-    // style: {
-    // 	shape: 'roundrectangle',
-    // 	width: 85,
-    // 	height: 85,
-    // 	'background-image' : _portIcon,
-    //             'background-color' : _nodeColor,
-    // 	label: "port " + _ports[i],
-    //             'color': _nodeColor,
-    // }
-    //     });
-    // }
+    _otherHosts = data.scan.scan;
+    _ips = Object.keys(_otherHosts).filter(ip => ip != data.ip)
 
     // Start with the localhost
     var _elements = [{ data: { id: "host" }}];
@@ -70,26 +49,24 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        data.others.forEach(host => {
-            if (host.scan[`${ip}`])
-            {
-                console.log()
-                const firstOSMatch = host.scan[`${ip}`]['osmatch'][0];
-                // Add the styling
-                _style.push({
-                    selector: `#other-${stringifiedIp}`,
-                    style: {
-                        shape: 'roundrectangle',
-                        width: 125,
-                        height: 125,
-                        'background-image': getIcon(firstOSMatch.name),
-                        'background-color': _nodeColor,
-                        label: ip + " - " + firstOSMatch.name,
-                        color: _nodeColor
-                    }
-                });
-            }
-        })
+        const scan = data.scan.scan[`${ip}`];
+        if (scan)
+        {
+            const firstOSMatch = Object.values(scan['vendor'])[0];
+            // Add the styling
+            _style.push({
+                selector: `#other-${stringifiedIp}`,
+                style: {
+                    shape: 'roundrectangle',
+                    width: 125,
+                    height: 125,
+                    'background-image': getIcon(firstOSMatch),
+                    'background-color': _nodeColor,
+                    label: ip + " - " + firstOSMatch,
+                    color: _nodeColor
+                }
+            });
+        }
 
         
     });
