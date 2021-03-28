@@ -51,30 +51,71 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Contains our nodes AND our edges 
       graph = [];
-      nodeId = null;
+      edgeId = null;
 
       for (index = 0; index < data.length; index++) {
-        packet = data[0]
-        nodeId = createEdgeId(packet);
-        nodes = createNodes(packet);
-        edges = createEdges(packet);
-        nodeCache.push(packet.fields.source_ip_address);
-        nodeCache.push(packet.fields.destination_ip_address);
-        graph.push(...nodes);
-        graph.push(edges);
+        packet = data[0];
+
+        // console.log(packet);
+
+        const closeConnectionFlag = packet.fields.fin;
+        const sourceIP = packet.fields.source_ip_address;
+        const destinationIP = packet.fields.destination_ip_address;
+        
+        // If the FIN flag has been set, we should remove the node (the connection is closed)
+        if (closeConnectionFlag) {
+          if (destinationIP != "10.0.2.15" && destinationIP != "127.0.0.1") {
+            const node = nodeMap.$(`[id="${destinationIP}"]`);
+            const nodeEdgeId = createEdgeId(packet);
+            const nodeEdge = nodeMap.$(`[id="${nodeEdgeId}"]`);
+            console.log("Removing node:", destinationIP)
+            nodeMap.remove(node);
+            nodeMap.remove(nodeEdge);
+            nodeCache.push(destinationIP);
+          } 
+          if (closeConnectionFlag && sourceIP != "10.0.2.15" && sourceIP != "127.0.0.1") {
+            const node = nodeMap.$(`[id="${sourceIP}"]`);
+            const nodeEdgeId = createEdgeId(packet);
+            const nodeEdge = nodeMap.$(`[id="${nodeEdgeId}"]`);
+            console.log("Removing node:", sourceIP)
+            nodeMap.remove(node);
+            nodeMap.remove(nodeEdge);
+            nodeCache.push(sourceIP);
+          }
+        } else {
+          edgeId = createEdgeId(packet);
+          edges = createEdges(packet);
+
+          const sourceNode = nodeMap.$(`[id="${sourceIP}"]`);
+          const destinationNode = nodeMap.$(`[id="${destinationIP}"]`);
+          if (sourceNode.length <= 0) {
+            graph.push(createNode(sourceIP));
+          }
+          if (destinationNode.length <= 0) {
+            graph.push(createNode(destinationIP));
+          }
+          
+          graph.push(edges);
+
+          nodeCache.push(sourceIP);
+          nodeCache.push(destinationIP);
+        }
       }
 
-      nodeMap.add(graph);
+      // If we have more than 0 elements to add
+      if (graph.length > 0){
+        nodeMap.add(graph);
+      }
 
       if (!isGraphCentered) {
         nodeMap.fit();
         isGraphCentered = true;
       }
       
-      if (nodeId != null)
+      if (edgeId != null)
       {
-        var node = nodeMap.getElementById(nodeId);
-        node.animate({
+        var edge = nodeMap.getElementById(edgeId);
+        edge.animate({
           style: {
             lineColor: trafficLineColor
           },
@@ -115,12 +156,6 @@ function createEdges(packet) {
   }
 }
 
-function createNodes(packet) {
-  return [
-    createNode(packet.fields.source_ip_address),
-    createNode(packet.fields.destination_ip_address)
-  ]
-}
 
 function createNode(id) {
 

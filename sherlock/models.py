@@ -36,6 +36,14 @@ class Packet(models.Model):
     # Acknowledgement
     acknowledgement = models.CharField(max_length=256, null=True)
 
+    # TCP Flags
+    urg = models.BooleanField(default=False)
+    ack = models.BooleanField(default=False)
+    psh = models.BooleanField(default=False)
+    rst = models.BooleanField(default=False)
+    syn = models.BooleanField(default=False)
+    fin = models.BooleanField(default=False)
+
     # Payload is just an large TextField representing the body of a message
     payload = models.TextField(default=None)
 

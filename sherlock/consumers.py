@@ -7,6 +7,7 @@ from django.core import serializers
 from channels.generic.websocket import AsyncWebsocketConsumer
 from sherlock.models import Packet
 from .socket_sniffer import SocketSniffer
+from threading import Thread
 
 sniffer = SocketSniffer()
 
@@ -19,20 +20,19 @@ class NetworkDataConsumer(AsyncWebsocketConsumer):
 
         self.connected = True
 
+        thread = Thread(target=sniffer.sniff)
+        thread.start()
+
         # While we are connected...
         while self.connected:
             # Sleep for one second(s)
-            await asyncio.sleep(0.01)
-
+            # await asyncio.sleep(0.25)
+            
             # Get packets that have appeared recently
-            # packet = await self.get_packets()
-            packet = sniffer.receive_packet()
-            if packet is not None:
-                packets = []
-                packets.append(packet)
-                
+            packets = sniffer.get_packets()
+            if len(packets) > 0:
                 # Save the packet to the database
-                self.save_packets(packet)
+                self.save_packets(packets)
 
                 # Serialize the packets to JSON data
                 json_packets = await self.serialize_packets(packets)
@@ -41,6 +41,8 @@ class NetworkDataConsumer(AsyncWebsocketConsumer):
                 await self.send(text_data=json.dumps({
                     "message": json_packets
                 }))
+
+        thread.join()
 
     async def disconnect(self):
         self.connected = False
@@ -60,12 +62,13 @@ class NetworkDataConsumer(AsyncWebsocketConsumer):
         return sniffer.receive_packet()
 
     @sync_to_async
-    def save_packets(self, packet):
-        try:
-            # Save the packet to the database
-            packet.save()
-        except Exception as e:
-            print("Failed to save the packet: {}", e)
+    def save_packets(self, packets):
+        for packet in packets:
+            try:
+                # Save the packet to the database
+                packet.save()
+            except Exception as e:
+                print("Failed to save the packet: {}", e)
 
     @sync_to_async
     def serialize_packets(self, packets):
