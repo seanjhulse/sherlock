@@ -5,13 +5,14 @@ from django.core import serializers
 from django.forms.models import model_to_dict
 from sherlock.models import Packet
 
+from sherlock.models import Packet, Scan
 from platform import system
 import datetime
 import socket
 import nmap
 from .osdata import get_op_sys, get_ip, map_net, scan_network
 
-from json import dumps
+import json
 
 # Views
 def index(request):
@@ -115,19 +116,11 @@ def web_sockets_example(request):
     return render(request, 'examples/websockets/index.html')
 
 def localpage(request):
-    
     ports = local_ports(request)
-    ports = dumps(ports)
-    my_ip = get_ip() 
-    other_ips = map_net()
-    other_hosts = []
+    ports = json.dumps(ports)
+    my_ip = get_ip()
+    latest_scan = Scan.objects.last()
 
-    for other_ip in other_ips:
-        if my_ip == other_ip:
-            other_ips.remove(other_ip)
-            break
-        
-        other_hosts.append(scan_network(other_ip))
-    
-    context = {'ports': ports, 'os': system(), 'ip': my_ip, 'others': other_hosts}
-    return render(request, 'localpage/localhost.html', {'context': dumps(context)})
+    context = {'ports': ports, 'os': system(), 'ip': my_ip, 'scan': json.loads(latest_scan.scan)}
+
+    return render(request, 'localpage/localhost.html', {'context': json.dumps(context)})

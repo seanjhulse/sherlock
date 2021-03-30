@@ -55,3 +55,20 @@ class Packet(models.Model):
 
     class Meta:
         managed = True
+
+class Scan(models.Model):
+    '''
+    Represents the results of an nmap scan.
+    '''
+
+    # The scan command that was run
+    command = models.TextField(default=None)
+
+    # Results of the scan that was run (stored as JSON)
+    scan = models.TextField(default="{}")
+
+    # Should store when this data was published to the database
+    pub_date = models.DateTimeField('date published')
+
+    class Meta:
+        managed = True
