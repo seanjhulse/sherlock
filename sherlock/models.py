@@ -13,6 +13,9 @@ class Packet(models.Model):
     # IP Address limited to 39 characters
     source_ip_address = models.CharField(max_length=39, null=True)
     destination_ip_address = models.CharField(max_length=39, null=True)
+    
+    source_host_name = models.CharField(max_length=256, null=True)
+    destination_host_name = models.CharField(max_length=256, null=True)
 
     # Version 
     version = models.CharField(max_length=256, null=True)

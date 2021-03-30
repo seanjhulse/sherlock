@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.core import serializers
-
+from django.forms.models import model_to_dict
 from sherlock.models import Packet
-from platform import system
 
+from platform import system
+import datetime
 import socket
 import nmap
 from .osdata import get_op_sys, get_ip, map_net, scan_network
@@ -17,7 +18,17 @@ def index(request):
 	return render(request, 'homepage/index.html')
 
 def node_map(request):
-    return render(request, 'homepage/node-map.html', {})
+    return render(request, 'homepage/node-map.html')
+
+def delete_all(request):
+    Packet.objects.all().delete()
+    return JsonResponse({"message": "Nodes deleted"})
+
+def get_nodes(request, minutes=5):
+    packetTime = timezone.now() - datetime.timedelta(minutes=minutes)
+    # Filter packets based on pub_date (__gte == any date greater than or equal to)
+    nodes = Packet.objects.filter(pub_date__gte=packetTime).values()
+    return JsonResponse({"nodes": list(nodes)})
 
 def host_node(request):
     return render(request, 'host-node/host-node.html', {})

@@ -1,4 +1,4 @@
-import socket, os, struct, binascii, sys
+import socket, os, struct, binascii, sys, time
 import collections
 from django.utils import timezone
 from sherlock.models import Packet
@@ -16,7 +16,9 @@ class SocketSniffer:
         packets = []
         while True:
             try:
-                packets.append(self.packets.popleft())
+                packet = self.packets.popleft()
+                if packet is not None:
+                    packets.append(packet)
             except IndexError as e:
                 break
         
@@ -24,6 +26,7 @@ class SocketSniffer:
 
     def sniff(self):
         while True:
+            # time.sleep(0.1)
             sniffed_data = self.sock.recv(2048)
             packet = Packet()
             packet.pub_date = timezone.now()
@@ -159,6 +162,13 @@ class SocketSniffer:
         dst_addr   = socket.inet_ntoa(ip_hdr[7])
         packet.source_ip_address = src_addr
         packet.destination_ip_address = dst_addr
+
+        try:
+            packet.source_host_name = socket.gethostbyaddr(src_addr)[0]
+            packet.destination_host_name = socket.gethostbyaddr(dst_addr)[0]
+        except:
+            # print("Failed to resolve hostname. Source {}, Destination {}", src_addr, dst_addr)
+            pass
         
         no_frag = flags >> 1
         more_frag = flags & 0x1
