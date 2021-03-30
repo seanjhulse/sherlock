@@ -68,7 +68,7 @@ class NetworkDataConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def get_packets(self):
-        return sniffer.receive_packet()
+        return sniffer.get_packets()
 
     def serialize_packets(self, packets):
         return serializers.serialize("json", packets)
