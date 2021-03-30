@@ -7,8 +7,12 @@ from django.core import serializers
 from channels.generic.websocket import AsyncWebsocketConsumer
 from sherlock.models import Packet
 from .socket_sniffer import SocketSniffer
+from threading import Thread
+
+sniffer = SocketSniffer()
 
 class NetworkDataConsumer(AsyncWebsocketConsumer):
+
 
     async def connect(self):
         # Accept the connection
@@ -16,25 +20,28 @@ class NetworkDataConsumer(AsyncWebsocketConsumer):
 
         self.connected = True
 
-        # While we are connected...
+        thread1 = Thread(target=sniffer.sniff)
+        thread1.start()
+    
         while self.connected:
-
             # Sleep for one second(s)
-            await asyncio.sleep(0.25)
-
+            await asyncio.sleep(0.1)
+            
             # Get packets that have appeared recently
-            packet = await self.get_packets()
-            if packet is not None:
-                packets = []
-                packets.append(packet)
+            packets = sniffer.get_packets()
+            if len(packets) > 0:
+                
+                await self.save_packets(packets)
 
                 # Serialize the packets to JSON data
-                json_packets = await self.serialize_packets(packets)
+                json_packets = self.serialize_packets(packets)
 
                 # Send the packets as a JSON object ("message": [Array of Packets])
                 await self.send(text_data=json.dumps({
                     "message": json_packets
                 }))
+
+        thread1.join()
 
     async def disconnect(self):
         self.connected = False
@@ -48,13 +55,20 @@ class NetworkDataConsumer(AsyncWebsocketConsumer):
         # self.send(text_data=json.dumps({
         #     'message': message
         # }))
+        
+    @sync_to_async
+    def save_packets(self, packets):
+        # Save the packet to the database
+        for packet in packets:
+            try:
+                # Save the packet to the database
+                packet.save()
+            except Exception as e:
+                print("Failed to save the packet: {}", e)
 
     @sync_to_async
     def get_packets(self):
-        self.socket_sniffer = SocketSniffer()
-        return self.socket_sniffer.receive_packet()
-        
+        return sniffer.get_packets()
 
-    @sync_to_async
     def serialize_packets(self, packets):
         return serializers.serialize("json", packets)

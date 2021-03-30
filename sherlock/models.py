@@ -13,6 +13,9 @@ class Packet(models.Model):
     # IP Address limited to 39 characters
     source_ip_address = models.CharField(max_length=39, null=True)
     destination_ip_address = models.CharField(max_length=39, null=True)
+    
+    source_host_name = models.CharField(max_length=256, null=True)
+    destination_host_name = models.CharField(max_length=256, null=True)
 
     # Version 
     version = models.CharField(max_length=256, null=True)
@@ -35,6 +38,14 @@ class Packet(models.Model):
 
     # Acknowledgement
     acknowledgement = models.CharField(max_length=256, null=True)
+
+    # TCP Flags
+    urg = models.BooleanField(default=False)
+    ack = models.BooleanField(default=False)
+    psh = models.BooleanField(default=False)
+    rst = models.BooleanField(default=False)
+    syn = models.BooleanField(default=False)
+    fin = models.BooleanField(default=False)
 
     # Payload is just an large TextField representing the body of a message
     payload = models.TextField(default=None)

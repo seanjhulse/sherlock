@@ -16,4 +16,6 @@ urlpatterns = [
     path('local-ports/', views.local_ports, name="local-ports"),
     path('node-map', views.node_map, name='node-map'),
     path('host-node', views.host_node, name='host-node'),
+    path('nodes/<int:minutes>/', views.get_nodes, name='get-nodes'),
+    path('delete-all/', views.delete_all, name='delete-all'),
 ]

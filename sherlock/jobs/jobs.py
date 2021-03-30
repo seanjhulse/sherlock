@@ -5,25 +5,13 @@ from django_apscheduler.models import DjangoJobExecution
 from django.db import transaction
 from sherlock.models import Packet, Scan
 
-import schedule
-import sys
-import time
-import nmap
-import json
+import schedule, sys, time, json, nmap
 from ..osdata import get_ip
 from ..socket_sniffer import SocketSniffer
 
 socket_sniffer = SocketSniffer()
 
 scheduler = BackgroundScheduler()
-
-@register_job(scheduler, 'interval', seconds=1, name='sniff network traffic', id="sniff network traffic", replace_existing=True)
-def network_job():
-    packet = socket_sniffer.receive_packet()
-    if packet != None and packet.source_ip_address != "127.0.0.1" and packet.destination_ip_address != "127.0.0.1":
-        # Lets skip port 53 since that's 99% just DNS calls?
-        if packet.source_port != '53' and packet.destination_port != '53': 
-            packet.save()
 
 @register_job(scheduler, 'interval', minutes=5, name='scan network', id="scan network", replace_existing=True)
 def nmap_job():
@@ -36,8 +24,8 @@ def nmap_job():
 
     try:
         scan.save()
-    except Error as e:
-        print("Failed to save latest scan: {}", e)
+    except Exception as e:
+        print("Failed to save latest scan: ", e)
 
 
 def start():
