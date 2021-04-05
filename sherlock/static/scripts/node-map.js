@@ -1,7 +1,7 @@
 
 // Setup global variables
 var nodeMap;
-
+var ipaddr;
 const defaultLineColor = "#444";
 const trafficLineColor = "red";
 const nodeCache = []
@@ -49,6 +49,59 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  nodeMap.cxtmenu({
+    selector: 'node, edge',
+    adaptativeNodeSpotlightRadius: false,
+    activeFillColor: 'rgba(113, 110, 212, 1)',
+    commands: [
+      {
+        content: 'Copy to clipboard',
+        select: function(ele){
+
+          let textArea = document.createElement('textarea')
+          // ipaddr = nodeMap.$(`[id="${packet.source_ip_address}"]`) 
+          ipaddr = data.id 
+          textArea.value = ipaddr 
+          textArea.style.top="0";
+          textArea.style.left = "0";
+          textArea.style.position = "fixed"
+          document.body.appendChild(textArea)
+          textArea.focus()
+          textArea.select()
+
+          try{
+              let successful = document.execCommand('copy')
+
+          }
+          catch(err){
+              console.error('fallback oops did not copy', err)
+
+          }
+          document.body.removeChild(textArea)
+
+
+          console.log(ipaddr);
+        }
+
+      },
+      {
+        content: 'Get port',
+        select: function(ele){
+          // omitted since this isn't final pull request for ticket
+        }, 
+
+      },
+      {
+        content: 'Other host',
+        select: function(ele){
+          window.location.href = "localpage/";
+        },
+      }
+
+    ]
+
+  });
+
 
   nodeMap.ready((event) => {
     // Start the graph
@@ -67,13 +120,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const message = JSON.parse(e.data);
       handleMessage(message)
     };
-
     // When the socket closes...
     socket.onclose = function (e) {
       console.error('Socket closed unexpectedly');
     };
   })
 });
+
 
 function createEdges(packet) {
   return {
