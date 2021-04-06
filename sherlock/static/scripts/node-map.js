@@ -1,7 +1,7 @@
 
+
 // Setup global variables
 var nodeMap;
-var ipaddr;
 const defaultLineColor = "#444";
 const trafficLineColor = "red";
 const nodeCache = []
@@ -10,6 +10,18 @@ var theta = 0;
 var graphFit = false;
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    // Get the data injected inside the div #data and parse it as JSON
+    const dataNode = document.getElementById("data");
+
+    // Do some hacky clean up
+    dataNode.dataset.context = dataNode.dataset.context.replaceAll("'", "\"")
+
+    const data = JSON.parse(dataNode.dataset.context);
+
+    const MY_IP = data.ip
+    console.log("host ip address is: " + MY_IP);
+
 
   // Clear Graph Button
   const button = document.getElementById('delete-all-button');
@@ -24,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
   nodeMap = window.cy = cytoscape({
     container: document.getElementById('node-map'),
     autounselectify: true,
-    maxZoom: 10,
+    maxZoom: 1,
     boxSelectionEnabled: false,
     layout: { name: 'cola' },
     style: [
@@ -38,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
       {
         selector: 'edge',
         style: {
+          'curve-style': 'bezier',
           'label': 'data(label)',
           'color': '#fff',
         }
@@ -50,17 +63,18 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   nodeMap.cxtmenu({
-    selector: 'node, edge',
+    selector: 'node',
     adaptativeNodeSpotlightRadius: false,
     activeFillColor: 'rgba(113, 110, 212, 1)',
     commands: [
       {
         content: 'Copy to clipboard',
         select: function(ele){
-
+          
           let textArea = document.createElement('textarea')
           // ipaddr = nodeMap.$(`[id="${packet.source_ip_address}"]`) 
-          ipaddr = nodeMap.$(`[id="${packet}]`) 
+          ipaddr = ele.data('id') 
+          console.log(ipaddr)
           textArea.value = ipaddr 
           textArea.style.top="0";
           textArea.style.left = "0";
@@ -80,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
           document.body.removeChild(textArea)
 
 
-          console.log(ipaddr);
         }
 
       },
@@ -94,6 +107,8 @@ document.addEventListener('DOMContentLoaded', function () {
       {
         content: 'Other host',
         select: function(ele){
+
+          let ipaddr = ele.data('id')
           window.location.href = "localpage/";
         },
       }
@@ -101,6 +116,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ]
 
   });
+  //create host
+  nodeMap.add(createLocalHost(MY_IP));
 
 
   nodeMap.ready((event) => {
@@ -171,6 +188,20 @@ function createNode(id, hostName) {
     }
   }
 }
+function createLocalHost(id) {
+  return {
+    group: 'nodes',
+    data: {
+      id: id,
+      label: 'This Computer'
+    },
+    position: {
+      x: 0,
+      y: 0
+    },
+  }
+}
+
 
 function createEdgeId(packet)
 {

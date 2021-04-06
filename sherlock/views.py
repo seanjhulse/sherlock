@@ -19,7 +19,9 @@ def index(request):
 	return render(request, 'homepage/index.html')
 
 def node_map(request):
-    return render(request, 'homepage/node-map.html')
+    my_ip = get_ip()
+    context = {'ip': my_ip}
+    return render(request, 'homepage/node-map.html', {'context': json.dumps(context)})
 
 def delete_all(request):
     Packet.objects.all().delete()
