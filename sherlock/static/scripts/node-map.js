@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
       {
         selector: 'edge',
         style: {
+          'curve-style': 'bezier',
           'label': 'data(label)',
           'color': '#fff',
         }
