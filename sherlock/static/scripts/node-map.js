@@ -1,4 +1,5 @@
 
+
 // Setup global variables
 var nodeMap;
 
@@ -10,6 +11,18 @@ var theta = 0;
 var graphFit = false;
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    // Get the data injected inside the div #data and parse it as JSON
+    const dataNode = document.getElementById("data");
+
+    // Do some hacky clean up
+    dataNode.dataset.context = dataNode.dataset.context.replaceAll("'", "\"")
+
+    const data = JSON.parse(dataNode.dataset.context);
+
+    const MY_IP = data.ip
+    console.log("host ip address is: " + MY_IP);
+
 
   // Clear Graph Button
   const button = document.getElementById('delete-all-button');
@@ -24,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
   nodeMap = window.cy = cytoscape({
     container: document.getElementById('node-map'),
     autounselectify: true,
-    maxZoom: 10,
+    maxZoom: 1,
     boxSelectionEnabled: false,
     layout: { name: 'cola' },
     style: [
@@ -48,6 +61,9 @@ document.addEventListener('DOMContentLoaded', function () {
       edges: []
     }
   });
+
+  //create host
+  nodeMap.add(createLocalHost(MY_IP));
 
 
   nodeMap.ready((event) => {
@@ -118,6 +134,20 @@ function createNode(id, hostName) {
     }
   }
 }
+function createLocalHost(id) {
+  return {
+    group: 'nodes',
+    data: {
+      id: id,
+      label: 'This Computer'
+    },
+    position: {
+      x: 0,
+      y: 0
+    },
+  }
+}
+
 
 function createEdgeId(packet)
 {
