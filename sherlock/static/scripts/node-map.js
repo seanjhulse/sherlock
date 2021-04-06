@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           let textArea = document.createElement('textarea')
           // ipaddr = nodeMap.$(`[id="${packet.source_ip_address}"]`) 
-          ipaddr = data.id 
+          ipaddr = nodeMap.$(`[id="${packet}]`) 
           textArea.value = ipaddr 
           textArea.style.top="0";
           textArea.style.left = "0";
