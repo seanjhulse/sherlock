@@ -73,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function () {
           
           let textArea = document.createElement('textarea')
           // ipaddr = nodeMap.$(`[id="${packet.source_ip_address}"]`) 
-          ipaddr = ele.data('id') 
-          console.log(ipaddr)
+          let ipaddr = ele.data('id') 
+          console.log(typeof ipaddr)
           textArea.value = ipaddr 
           textArea.style.top="0";
           textArea.style.left = "0";
@@ -98,9 +98,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
       },
       {
-        content: 'Get port',
+        content: 'Get ports',
         select: function(ele){
-          // omitted since this isn't final pull request for ticket
+          window.location.href = ''
         }, 
 
       },
@@ -109,7 +109,22 @@ document.addEventListener('DOMContentLoaded', function () {
         select: function(ele){
 
           let ipaddr = ele.data('id')
-          window.location.href = "localpage/";
+          sessionStorage.setItem('ipaddr', ipaddr);
+
+          let nextPage = "/localpage/".concat(ipaddr);
+          $.ajax({
+              type: 'GET',
+              url: nextPage, 
+              data: {
+                ajaxip: ipaddr 
+              },
+              success: function(data) {
+                  window.location.href = nextPage;  
+              },
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+              }
+          }); 
         },
       }
 

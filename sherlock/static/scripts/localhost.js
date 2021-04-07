@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Get the data injected inside the div #data and parse it as JSON
     const dataNode = document.getElementById("data");
-
+    let nodeMapIP = sessionStorage.getItem('ipaddr');
     // Do some hacky clean up
     dataNode.dataset.context = dataNode.dataset.context.replaceAll("'", "\"")
 
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
             height: 128,
             'background-image': getIcon(data.os),
             'background-color': _nodeColor,
-            label: data.ip,
+            label: nodeMapIP,
             'color': _nodeColor,
         },
     }];
