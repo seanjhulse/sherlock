@@ -3,11 +3,11 @@
 // Setup global variables
 var nodeMap;
 const defaultLineColor = "#444";
-const trafficLineColor = "red";
 const nodeCache = []
 var radius = 500;
 var theta = 0;
 var graphFit = false;
+var trafficLineColor = "red";
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -308,6 +308,7 @@ function addPacket(packet)
   if (edgeId != null)
   {
     var edge = nodeMap.getElementById(edgeId);
+    trafficLineColor = resolveProtocol(packet.protocol);
     edge.animate({
       style: {
         lineColor: trafficLineColor
@@ -339,4 +340,20 @@ function removeNode(packet, id)
   if (index > -1) {
     nodeCache.splice(index, 1);
   }
+}
+function resolveProtocol(protocolCode){
+    var output;
+    switch (protocolCode){
+        case 8:
+            output = "green"
+            break;
+        case 9:
+            //stand in for UDP until I figure out what that is;
+            output = "blue";
+            break;
+        default:
+            output = "red";
+            break;
+    }
+    return output;
 }

@@ -35,15 +35,22 @@
 				<li class="navbar__item">
 					<a href="/" class="navbar__links"> Home </a>
 				</li>
-
 			</ul>
 		</div>
 	</nav>
+	<!-- Legend -->
+	<div id = "legend">
+		<div id = "legendheader">Legend</div>
+		<p style="color: green"c>TCP/IP</p>
+		<p style="color: blue">UDP</p>
+		<p style="color: red">Other</p>
+	</div>
+
   <div id="data" data-context="{{ context }}" />
 
 	<!-- Main Section -->
 	<div class="main">
-		<div id="node-map"></div>
+		<div id="node-map" class = 'node-map'></div>
 		<div class="main__container">
 			<div class="main__content">
 				<button id="delete-all-button" class="delete-all-button main__btn button" data-hover="Clear Graph">Clear Graph</button>
@@ -55,6 +62,8 @@
 
 
 	<script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
+	<script src="{% static 'scripts/legend.js' %}" type="text/javascript"></script>
+
 </body>
 
 </html>
