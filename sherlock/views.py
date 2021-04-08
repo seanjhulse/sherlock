@@ -118,6 +118,7 @@ def web_sockets_example(request):
     return render(request, 'examples/websockets/index.html')
     
 def localpage(request, ajaxip):
+
     ports = []
     ports = json.dumps(ports)
     cidr = ajaxip + "/24"
@@ -134,10 +135,9 @@ def localpage(request, ajaxip):
 
 def portpage(request, ajaxip):
     print('Getting ports...')
-    ports = local_ports(request, '127.0.0.1', 10000)
 
-    # ports = local_ports(request)
+    ports = local_ports(request, ajaxip, 10000)
     my_ip = ajaxip
     ports = json.dumps(ports)
     context = {'ports': ports, 'os': system(), 'ip': my_ip }
-    return render(request, 'portpage/porthosts.html', {'context' : json.dumps(context)}) 
+    return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)}) 

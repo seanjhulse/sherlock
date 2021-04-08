@@ -105,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
           sessionStorage.setItem('ipaddr', ipaddr);
 
           let nextPage = "/portpage/".concat(ipaddr);
+          // let nextPage = "/host-node/".concat(ipaddr);
           $.ajax({
               type: 'GET',
               url: nextPage, 
@@ -112,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ajaxip: ipaddr 
               },
               success: function(data) {
-                  // window.location.href = nextPage;  
+                  window.location.href = nextPage;  
               },
               headers: {
                 'X-Requested-With': 'XMLHttpRequest'

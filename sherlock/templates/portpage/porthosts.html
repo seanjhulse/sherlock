@@ -10,7 +10,8 @@
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   <link rel="stylesheet" href="{% static 'css/cyto-styles.css' %}">
-  <script src="https://unpkg.com/cytoscape/dist/cytoscape.umd.js"></script>
+
+
 </head>
 
 
@@ -46,6 +47,7 @@
 
 
   <div id="porthosts"></div>
+
   <div id="data" data-context="{{ context }}" />
 
   <!-- Main Section -->
@@ -59,6 +61,7 @@
   <!-- Nother Section -->
   <script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
 
-  <script src="{% static 'scripts/porthosts.js' %}"></script>
+	<script src="{% static 'scripts/cytoscape-new.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'scripts/porthosts.js' %}" type="text/javascript"></script>
 </body>
 </html>
