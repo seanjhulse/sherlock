@@ -2,7 +2,6 @@
 
 // Setup global variables
 var nodeMap;
-
 const defaultLineColor = "#444";
 const nodeCache = []
 var radius = 500;
@@ -63,6 +62,94 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  nodeMap.cxtmenu({
+    selector: 'node',
+    adaptativeNodeSpotlightRadius: false,
+    activeFillColor: 'rgba(113, 110, 212, 1)',
+    commands: [
+      {
+        content: 'Copy to clipboard',
+        select: function(ele){
+          
+          let textArea = document.createElement('textarea')
+          // ipaddr = nodeMap.$(`[id="${packet.source_ip_address}"]`) 
+          let ipaddr = ele.data('id') 
+          console.log(typeof ipaddr)
+          textArea.value = ipaddr 
+          textArea.style.top="0";
+          textArea.style.left = "0";
+          textArea.style.position = "fixed"
+          document.body.appendChild(textArea)
+          textArea.focus()
+          textArea.select()
+
+          try{
+              let successful = document.execCommand('copy')
+
+          }
+          catch(err){
+              console.error('fallback oops did not copy', err)
+
+          }
+          document.body.removeChild(textArea)
+
+
+        }
+
+      },
+      {
+        content: 'Get ports',
+        select: function(ele){
+
+          let ipaddr = ele.data('id')
+          sessionStorage.setItem('ipaddr', ipaddr);
+
+          let nextPage = "/portpage/".concat(ipaddr);
+          // let nextPage = "/host-node/".concat(ipaddr);
+          $.ajax({
+              type: 'GET',
+              url: nextPage, 
+              data: {
+                ajaxip: ipaddr 
+              },
+              success: function(data) {
+                  window.location.href = nextPage;  
+              },
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+              }
+          }); 
+        }, 
+
+      },
+      {
+        content: 'Get other hosts',
+        select: function(ele){
+
+          let ipaddr = ele.data('id')
+          sessionStorage.setItem('ipaddr', ipaddr);
+
+          let nextPage = "/localpage/".concat(ipaddr);
+          $.ajax({
+              type: 'GET',
+              url: nextPage, 
+              data: {
+                ajaxip: ipaddr 
+              },
+              success: function(data) {
+
+                  window.location.href = nextPage;  
+              },
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+              }
+          }); 
+        },
+      }
+
+    ]
+
+  });
   //create host
   nodeMap.add(createLocalHost(MY_IP));
 
@@ -84,13 +171,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const message = JSON.parse(e.data);
       handleMessage(message)
     };
-
     // When the socket closes...
     socket.onclose = function (e) {
       console.error('Socket closed unexpectedly');
     };
   })
 });
+
 
 function createEdges(packet) {
   return {

@@ -85,7 +85,7 @@ def host_scan(request, ipaddress, portrange):
 	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
 
 
-def local_ports(request):
+def local_ports(request, ip="127.0.0.1", portrange=65535):
     """Scan all local ports 
 
     Args: 
@@ -95,9 +95,9 @@ def local_ports(request):
     """
     open_ports = []
 
-    for port in range(0,65535):
+    for port in range(0,portrange):
         test_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        result = test_socket.connect_ex(("127.0.0.1", port))
+        result = test_socket.connect_ex((ip, port))
 
         if result == 0:
             open_ports.append(port)
@@ -116,13 +116,28 @@ def web_sockets_example(request):
         HTML
     """
     return render(request, 'examples/websockets/index.html')
+    
+def localpage(request, ajaxip):
 
-def localpage(request):
-    ports = local_ports(request)
+    ports = []
     ports = json.dumps(ports)
-    my_ip = get_ip()
+    cidr = ajaxip + "/24"
+    nm = nmap.PortScanner()
+    scan_results = nm.scan(hosts=cidr, arguments='-sP')
+    scan = json.dumps(scan_results) 
+    print('finished scanning for other hosts')
+    my_ip = ajaxip
+    
     latest_scan = Scan.objects.last()
-
-    context = {'ports': ports, 'os': system(), 'ip': my_ip, 'scan': json.loads(latest_scan.scan)}
-
+    context = {'ports': ports, 'os': system(), 'ip': my_ip, 'scan': json.loads(scan)}
     return render(request, 'localpage/localhost.html', {'context': json.dumps(context)})
+
+
+def portpage(request, ajaxip):
+    print('Getting ports...')
+
+    ports = local_ports(request, ajaxip, 10000)
+    my_ip = ajaxip
+    ports = json.dumps(ports)
+    context = {'ports': ports, 'os': system(), 'ip': my_ip }
+    return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)}) 

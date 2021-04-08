@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Get the data injected inside the div #data and parse it as JSON
     const dataNode = document.getElementById("data");
-
+    let nodeMapIP = sessionStorage.getItem('ipaddr');
     // Do some hacky clean up
     dataNode.dataset.context = dataNode.dataset.context.replaceAll("'", "\"")
 
@@ -12,6 +12,20 @@ document.addEventListener('DOMContentLoaded', function () {
     _otherHosts = data.scan.scan;
     _ips = Object.keys(_otherHosts).filter(ip => ip != data.ip)
 
+    let ports = data.ports;
+    // _ips = Object.keys(_otherHosts).filter(ip => ip != data.ip)
+    ports = ports.substring(1);
+    ports = ports.substring(0, ports.length - 1);
+    let _ports = ports.split(',')
+    for(let i = 0; i < _ports.length; i++)
+    {
+       _ports[i] = _ports[i].trim();
+       _ports[i] = parseInt(_ports[i]);
+       
+    }
+
+    // // Start with the localhost
+    console.log(_ports)
     // Start with the localhost
     var _elements = [{ data: { id: "host" }}];
 
@@ -23,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
             height: 128,
             'background-image': getIcon(data.os),
             'background-color': _nodeColor,
-            label: data.ip,
+            label: nodeMapIP,
             'color': _nodeColor,
         },
     }];
