@@ -118,19 +118,24 @@ def web_sockets_example(request):
     return render(request, 'examples/websockets/index.html')
     
 def localpage(request, ajaxip):
-    print(ajaxip)
-    # ports = local_ports(request)
     ports = []
     ports = json.dumps(ports)
     cidr = ajaxip + "/24"
     nm = nmap.PortScanner()
     scan_results = nm.scan(hosts=cidr, arguments='-sP')
-     
-    scan = Scan(command=scan_results['nmap']['command_line'], scan=json.dumps(scan_results), pub_date=timezone.now())
+    scan = json.dumps(scan_results) 
     print('finished scanning for other hosts')
-    # my_ip = get_ip()
     my_ip = ajaxip
     
     latest_scan = Scan.objects.last()
-    context = {'ports': ports, 'os': system(), 'ip': my_ip, 'scan': json.loads(latest_scan.scan)}
+    context = {'ports': ports, 'os': system(), 'ip': my_ip, 'scan': json.loads(scan)}
     return render(request, 'localpage/localhost.html', {'context': json.dumps(context)})
+
+
+def portpage(request, ajaxip):
+    print('Getting ports...')
+    ports = local_ports(request)
+    my_ip = ajaxip
+    ports = json.dumps(ports)
+    context = {'ports': ports, 'os': system(), 'ip': my_ip }
+    return render(request, 'portpage/porthosts.html', {'context' : json.dumps(context)}) 
