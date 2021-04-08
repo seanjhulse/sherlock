@@ -22,17 +22,23 @@ document.addEventListener('DOMContentLoaded', function () {
        _ports[i] = parseInt(_ports[i]);
        
     }
-    console.log(_ports)
 
     // Start with the localhost
-    var _elements = [{ data: { id: "host" }},];
+    console.log(_ports)
     
+    var hostJSON = { container: document.getElementById('porthosts'), }
 
+    var _elements = [{ data: { id: "host" }},];
     var _portIcon = "../../static/images/port-icon.png";
     for (var i = 0; i < _ports.length; i++) {
         _elements.push({ data: { id: 'port' + _ports[i] } });
     }
 
+
+    hostJSON = {
+        ...hostJSON,
+        elements: _elements
+    }
     var _style = [{
         selector: '#host', //#tag name to select node
         style: {
@@ -62,14 +68,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
+    hostJSON = {
+        ...hostJSON,
+        style: _style,
+    }
 
     //RUN CYTOSCAPE
-    var cy = cytoscape({
-        container: document.getElementById('porthosts'),
-        style: _style,
-        elements: _elements
-    });
-
+    // var cy = cytoscape({
+    //     container: document.getElementById('porthosts'),
+    //     style: _style,
+    //     elements: _elements
+    // });
+    var cy = cytoscape(hostJSON) 
     //Connect nodes to host using .add(). may move node creation up to the initial
     //object creation later, but for now will just use this
     //need to figure out how to make nodes longer
@@ -88,7 +98,8 @@ document.addEventListener('DOMContentLoaded', function () {
     //run .layout() to organize nodes.        
 
     cy.layout({
-        name: 'concentric'
+        name: 'concentric',
+        minDist: 40
     }).run();
 });
 

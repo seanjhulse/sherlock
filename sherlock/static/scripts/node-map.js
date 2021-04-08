@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ajaxip: ipaddr 
               },
               success: function(data) {
-                  window.location.href = nextPage;  
+                  // window.location.href = nextPage;  
               },
               headers: {
                 'X-Requested-With': 'XMLHttpRequest'
@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ajaxip: ipaddr 
               },
               success: function(data) {
+
                   window.location.href = nextPage;  
               },
               headers: {

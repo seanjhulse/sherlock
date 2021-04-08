@@ -85,7 +85,7 @@ def host_scan(request, ipaddress, portrange):
 	return HttpResponse("Other hosts found: %s" % (scan_info['scan']))
 
 
-def local_ports(request, ip="127.0.0.1"):
+def local_ports(request, ip="127.0.0.1", portrange=65535):
     """Scan all local ports 
 
     Args: 
@@ -95,7 +95,7 @@ def local_ports(request, ip="127.0.0.1"):
     """
     open_ports = []
 
-    for port in range(0,65535):
+    for port in range(0,portrange):
         test_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         result = test_socket.connect_ex((ip, port))
 
@@ -134,7 +134,9 @@ def localpage(request, ajaxip):
 
 def portpage(request, ajaxip):
     print('Getting ports...')
-    ports = local_ports(request)
+    ports = local_ports(request, '127.0.0.1', 10000)
+
+    # ports = local_ports(request)
     my_ip = ajaxip
     ports = json.dumps(ports)
     context = {'ports': ports, 'os': system(), 'ip': my_ip }
