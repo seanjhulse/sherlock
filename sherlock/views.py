@@ -138,7 +138,7 @@ def localpage(request, ajaxip):
 def portpage(request, ajaxip):
     print('Getting ports...')
 
-    ports = local_ports(request, ajaxip, 10000)
+    ports = local_ports(request)
     my_ip = ajaxip
     ports = json.dumps(ports)
     context = {'ports': ports, 'os': system(), 'ip': my_ip }
