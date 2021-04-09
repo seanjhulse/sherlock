@@ -118,7 +118,7 @@ def web_sockets_example(request):
     return render(request, 'examples/websockets/index.html')
     
 def localpage(request, ajaxip):
-
+    print('Scanning for other hosts...')
     ports = []
     ports = json.dumps(ports)
     cidr = ajaxip + "/24"
@@ -126,6 +126,8 @@ def localpage(request, ajaxip):
     scan_results = nm.scan(hosts=cidr, arguments='-sP')
     scan = json.dumps(scan_results) 
     print('finished scanning for other hosts')
+
+    print(scan)
     my_ip = ajaxip
     
     latest_scan = Scan.objects.last()
