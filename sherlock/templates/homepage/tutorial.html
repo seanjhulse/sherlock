@@ -2,12 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>SherLOCK - Home</title>
+    <title>SherLOCK - Tutorial</title>
 
-    <!--Overall Styling for Webpage-->
+    <!--Example of linking to javascript-->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-
+    
     <!--Google Font-->
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
@@ -15,11 +15,12 @@
       rel="stylesheet"
     />
   </head>
-
+  
   <body>
     <!-- Navigation Bar -->
     <nav class="navbar">
       <div class="navbar__container">
+        <!--App Logo-->
         <a href="/" id="navbar__logo"
           ><img
             width="75"
@@ -28,56 +29,53 @@
           />SherLOCK</a
         >
 
-        <!-- Hamburger Button -->
+        <!--Hamburger Button-->
         <div class="navbar__toggle" id="mobile-menu">
           <span class="bar"></span>
           <span class="bar"></span>
           <span class="bar"></span>
         </div>
 
-        <!--Top Navbar Items-->
         <ul class="navbar__menu">
-          
 
-          <!--Link to Network Traffic-->
-          <!-- <li class="navbar__item"></li>
-            <a href="/network-traffic" class="navbar__links"> Network Traffic </a>
-          </li>
-		  Link to Host Demo-->
-          <!-- <li class="navbar__item">
-            <a href="/host-node" class="navbar__links"> Host Demo </a>
-          </li>
-
+          <!--Example Item-->
           <li class="navbar__item">
-            <a href="/localpage" class="navbar__links"> Local Page  </a>
-            </li> --> 
+            <a href="/" class="navbar__links"> Home </a>
+          </li>
+
         </ul>
       </div>
     </nav>
 
-    <!-- Main Section -->
+    <div class="tutorial_selection">
+        <div class="card">
+            <span></span>
+            <div class="card_content">
+                <h2>Take the Tutorial</h2>
+                <p>Here, we'll walk you through how to interact with the website.</p>
+                <a href="/">Proceed</a>
+            </div>
+        </div>
+        <div class="card">
+            <span></span>
+            <div class="card_content">
+                <h2>Continue with Node Map</h2>
+                <p>You have been here before. Welcome back!</p>
+                <a href="/">Proceed</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Info Section -->
     <div class="main">
       <div class="main__container">
         <div class="main__content">
-          <h1>SherLOCK</h1>
-          <h2>Technology</h2>
-          <p>For Your Holmes Network</p>
-
-          <!--Do something with this button-->
-          <button class="main__btn">
-            <a href="/tutorial">Get Started</a>
-          </button>
-        </div>
-
-        <div class="main__img--container">
-          <img src="{% static 'images/pic1.svg' %}" alt="pic" id="main__img" />
+          <!--Insert content here-->
         </div>
       </div>
-      <!--End Of 'main_container'-->
     </div>
-    <!--End Of 'main'-->
 
-    <!-- Nother Section -->
+    {% load static %}
     <script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
   </body>
 </html>

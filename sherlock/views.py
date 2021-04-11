@@ -140,4 +140,7 @@ def portpage(request, ajaxip):
     my_ip = ajaxip
     ports = json.dumps(ports)
     context = {'ports': ports, 'os': system(), 'ip': my_ip }
-    return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)}) 
+    return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)})
+
+def tutorial(request):
+    return render(request, 'homepage/tutorial.html')
