@@ -317,7 +317,7 @@ body {
   float: right;
   width: 150px;
   z-index: 9;
-  background-color: #F1F1F1;
+  background-color: #141414;
   text-align: center;
   border-radius: 4px;
 }
@@ -366,7 +366,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg,  #104e8b 0%, #ab82bf 100%);
+  background: linear-gradient(45deg,  #104e8b, #ab82bf);
 }
 
 .tutorial_selection .card::after {
@@ -376,11 +376,61 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg,  #104e8b 0%, #ab82bf 100%);
+  background: linear-gradient(45deg,  #104e8b, #ab82bf);
   filter: blur(30px);
 }
 
 .tutorial_selection .card:nth-child(2)::before,
 .tutorial_selection .card:nth-child(2)::after {
-  background: linear-gradient(315deg, #104e8b 0%, #ab82bf 100%);
+  background: linear-gradient(315deg, #104e8b, #ab82bf);
+}
+
+.tutorial_selection .card span {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  background: rgba(0,0,0,0.4);
+  z-index: 2;
+}
+
+.tutorial_selection .card span::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.tutorial_selection .card .card_content {
+  position: relative;
+  z-index: 10;
+  padding: 20px 40px;
+}
+
+.tutorial_selection .card .card_content h2 {
+  font-size: 2em;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.tutorial_selection .card .card_content p {
+  font-size: 1.1em;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.4em;
+}
+
+.tutorial_selection .card .card_content a {
+  display: inline-block;
+  font-size: 1.1em;
+  color: #fff;
+  background: linear-gradient(315deg, #002e5c, #6a3186);
+  padding: 10px;
+  text-decoration: none;
+  font-weight: 700;
 }

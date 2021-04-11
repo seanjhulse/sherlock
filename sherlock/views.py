@@ -142,5 +142,5 @@ def portpage(request, ajaxip):
     context = {'ports': ports, 'os': system(), 'ip': my_ip }
     return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)})
 
-def tutorial(request):
-    return render(request, 'homepage/tutorial.html')
+def splash_page(request):
+    return render(request, 'homepage/splash-page.html')
