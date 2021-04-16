@@ -261,10 +261,10 @@ function initGraph()
 
 function addPacket(packet)
 {
-  const closeConnectionFlag = packet.fin;
+  const closeConnectionFlag = packet.flags === "FIN";
   const sourceIP = packet.source_ip_address;
   const destinationIP = packet.destination_ip_address;
-  
+
   // If the FIN flag has been set, we should remove the node (the connection is closed)
   if (closeConnectionFlag) {
     if (destinationIP != "10.0.2.15" && destinationIP != "127.0.0.1") {
@@ -344,10 +344,10 @@ function removeNode(packet, id)
 function resolveProtocol(protocolCode){
     var output;
     switch (protocolCode){
-        case 8:
+        case "TCP":
             output = "green"
             break;
-        case 9:
+        case "UDP":
             //stand in for UDP until I figure out what that is;
             output = "blue";
             break;
