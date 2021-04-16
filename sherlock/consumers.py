@@ -20,7 +20,7 @@ class NetworkDataConsumer(AsyncWebsocketConsumer):
 
         self.connected = True
 
-        thread1 = Thread(target=sniffer.sniff)
+        thread1 = Thread(target=sniffer.sniff_packets)
         thread1.start()
     
         while self.connected:
