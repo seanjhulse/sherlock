@@ -20,4 +20,9 @@ urlpatterns = [
     path('nodes/<int:minutes>/', views.get_nodes, name='get-nodes'),
     path('delete-all/', views.delete_all, name='delete-all'),
     path('splash-page/', views.splash_page, name='splash-page'),
+    path('tutpage1/', views.tutpage1, name='tutpage1'),
+    path('tutpage2/', views.tutpage2, name='tutpage2'),
+    path('tutpage3/', views.tutpage3, name='tutpage3'),
+    path('tutpage4/', views.tutpage4, name='tutpage4'),
+    path('tutpage5/', views.tutpage5, name='tutpage5'),
 ]

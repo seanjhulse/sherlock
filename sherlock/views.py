@@ -144,3 +144,18 @@ def portpage(request, ajaxip):
 
 def splash_page(request):
     return render(request, 'homepage/splash-page.html')
+
+def tutpage1(request):
+    return render(request, 'tutorial/tutpage1.html')
+
+def tutpage2(request):
+    return render(request, 'tutorial/tutpage2.html')
+
+def tutpage3(request):
+    return render(request, 'tutorial/tutpage3.html')
+
+def tutpage4(request):
+    return render(request, 'tutorial/tutpage4.html')
+
+def tutpage5(request):
+    return render(request, 'tutorial/tutpage5.html')

@@ -2,15 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>template</title>
+    <title>Tutorial - Beginning</title>
 
     {% load static %}
-
     <!--Example of linking to javascript-->
     <!-- <script src="{% static 'scripts/script.js' %}" type="text/javascript"></script> -->
 
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-
+    
     <!--Google Font-->
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap" rel="stylesheet"/>
@@ -47,16 +46,29 @@
       </div>
     </nav>
 
-    <!-- Info Section -->
-    <div class="main">
-      <div class="main__container">
-        <div class="main__content">
-          <!--Insert content here-->
-        </div>
+    <div class="info_section">
+      <div style="position: relative; width: 420px; height: 400px;" class="info_box">
+          <span></span>
+          <div class="info_content">
+              <h2>Welcome to SherLOCK!</h2>
+              <p>We, the SherLOCK Development Team, would like to thank you for using our product.</p>
+              <a href="/tutpage4">Next</a>
+          </div>
       </div>
     </div>
 
-    {% load static %}
+    <!-- Mobile Menu  -->
     <script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
+    <!-- Hide Nav Bar on Scroll -->
+    <script>
+      window.onscroll = scrollShowNav;
+      function scrollShowNav() {
+         if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementsByTagName("nav")[0].style.top = "-50px";
+         } else {
+            document.getElementsByTagName("nav")[0].style.top = "0px";
+         }
+      }
+    </script>
   </body>
 </html>

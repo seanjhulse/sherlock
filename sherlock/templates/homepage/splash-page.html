@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>SherLOCK - Tutorial</title>
+    <title>SherLOCK - Welcome</title>
 
     <!--Example of linking to javascript-->
     {% load static %}
@@ -47,13 +47,13 @@
       </div>
     </nav>
 
-    <div class="tutorial_selection">
+    <div class="card_selection">
         <div class="card">
             <span></span>
             <div class="card_content">
                 <h2>Tutorial</h2>
                 <p>Here, we'll walk you through how to interact with the website.</p>
-                <a href="/">Proceed</a>
+                <a href="/tutpage1">Take the Tutorial</a>
             </div>
         </div>
         <div class="card">
@@ -61,7 +61,7 @@
             <div class="card_content">
                 <h2>Node Map</h2>
                 <p>You have been here before. Welcome back!</p>
-                <a href="/node-map">Proceed</a>
+                <a href="/node-map">Show me the Connections</a>
             </div>
         </div>
     </div>
@@ -75,7 +75,6 @@
       </div>
     </div>
 
-    {% load static %}
     <script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
   </body>
 </html>
