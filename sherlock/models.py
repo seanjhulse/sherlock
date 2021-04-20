@@ -27,7 +27,7 @@ class Packet(models.Model):
     ttl = models.CharField(max_length=256, null=True)
 
     # Protocol
-    protocol = models.IntegerField(default=0)
+    protocol = models.CharField(max_length=256, null=True)
 
     # Source and Destination Port limited to 5 characters
     source_port = models.CharField(max_length=5, null=True)
@@ -40,12 +40,7 @@ class Packet(models.Model):
     acknowledgement = models.CharField(max_length=256, null=True)
 
     # TCP Flags
-    urg = models.BooleanField(default=False)
-    ack = models.BooleanField(default=False)
-    psh = models.BooleanField(default=False)
-    rst = models.BooleanField(default=False)
-    syn = models.BooleanField(default=False)
-    fin = models.BooleanField(default=False)
+    flags = models.CharField(max_length=256, null=True)
 
     # Payload is just an large TextField representing the body of a message
     payload = models.TextField(default=None)
