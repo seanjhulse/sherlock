@@ -11,6 +11,7 @@ var trafficLineColor = "red";
 var unique = [];
 var trafficColors = ['green', 'blue', 'yellow', 'orange','purple','red']
 const COLOR_COUNT = trafficColors.length-1;
+import { getIcon } from './localhost.js'
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -25,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const MY_IP = data.ip
     console.log("host ip address is: " + MY_IP);
+    const MY_SYSTEM = data.os;
+    console.log('host os is: ' + MY_SYSTEM);
 
 
   // Clear Graph Button
@@ -49,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
         style: {
           'label': 'data(label)',
           'color': '#fff',
-          'background-image': '../../static/images/default-logo.png',
         }
       },
       {
@@ -206,7 +208,7 @@ function handleMessage(message)
 }
 
 function createNode(id, hostName) {
-  console.log("This is the id: " + id)
+  console.log("This is the ip: " + id)
   if (!nodeCache.includes(id)) {
     // Increment theta
     theta = theta + 5;
@@ -224,6 +226,13 @@ function createNode(id, hostName) {
     position: {
       x: radius * Math.cos(theta),
       y: radius * Math.sin(theta)
+    },
+    style: {
+          shape: 'roundrectangle',
+          width:65,
+          height: 65, 
+          'background-image': '../../static/images/default-icon.png',
+          'background-color': '#F9F9F9'
     }
   }
 }
@@ -238,6 +247,14 @@ function createLocalHost(id) {
       x: 0,
       y: 0
     },
+    style: {
+        shape: 'roundrectangle',
+         width: 100,
+         height: 100,
+        //  'background-image': '../../static/images/linux-icon.png',
+        'background-image': getIcon(MY_SYSTEM),
+        'background-color': '#F9F9F9'
+    }
   }
 }
 

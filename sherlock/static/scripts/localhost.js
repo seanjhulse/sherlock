@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
  // yes, Intel isn't just windows, but Apple devices show "Apple", same for Linux
-function getIcon(os) {
+export function getIcon(os) {
     _osIcon = "../../static/images/default-logo.png";
 
     switch (os) {

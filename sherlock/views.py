@@ -20,7 +20,7 @@ def index(request):
 
 def node_map(request):
     my_ip = get_ip()
-    context = {'ip': my_ip}
+    context = {'ip': my_ip, 'os': system()}
     return render(request, 'homepage/node-map.html', {'context': json.dumps(context)})
 
 def delete_all(request):
