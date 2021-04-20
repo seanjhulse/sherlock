@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         style: {
           'label': 'data(label)',
           'color': '#fff',
+          'background-image': '../../static/images/default-logo.png',
         }
       },
       {
@@ -201,7 +202,7 @@ function handleMessage(message)
 }
 
 function createNode(id, hostName) {
-
+  console.log("This is the id: " + id)
   if (!nodeCache.includes(id)) {
     // Increment theta
     theta = theta + 5;
