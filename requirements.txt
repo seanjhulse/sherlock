@@ -5,3 +5,4 @@ schedule
 python-nmap
 python3-nmap
 scapy
+dnspython
