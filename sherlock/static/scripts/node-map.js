@@ -311,7 +311,6 @@ function addPacket(packet) {
     // Create the intermediary nodes (if they exist)
     const sourceHostName = domainFromUrl(packet.source_host_name);
     const destinationHostName = domainFromUrl(packet.destination_host_name);
-    const uniqueNodeName = 'unknown domain';
    
     const sourceHostNode = nodeMap.$(`[id="${sourceHostName}"]`);
     const destinationHostNode = nodeMap.$(`[id="${destinationHostName}"]`);
@@ -352,26 +351,21 @@ function addPacket(packet) {
         nodeMap.add(edges);
       }
     } else {
-      const uniqueNode = nodeMap.$(`[id="${uniqueNodeName}"]`)
-      if (uniqueNode.length <= 0) {
-        nodeMap.add(createNode(uniqueNodeName));
-      }
-
       // Edge from source -> intermediary
-      var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + uniqueNodeName}"]`)
+      var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + packet.destination_ip_address}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(packet.source_ip_address, uniqueNodeName, port);
+        edges = createEdge(packet.source_ip_address, packet.destination_ip_address, port);
         nodeMap.add(edges);
       }
 
       // Edge from intermediary -> end
-      edgeNode = nodeMap.$(`[id="${uniqueNodeName + '->' + packet.destination_ip_address}"]`)
-      if (edgeNode.length <= 0)
-      {
-        edges = createEdge(uniqueNodeName, packet.destination_ip_address, port);
-        nodeMap.add(edges);
-      }
+      // edgeNode = nodeMap.$(`[id="${uniqueNodeName + '->' + packet.destination_ip_address}"]`)
+      // if (edgeNode.length <= 0)
+      // {
+      //   edges = createEdge(uniqueNodeName, packet.destination_ip_address, port);
+      //   nodeMap.add(edges);
+      // }
     }
 
     colorEdge(packet.source_ip_address + '->' + sourceHostName);
@@ -379,39 +373,32 @@ function addPacket(packet) {
     colorEdge(packet.source_ip_address + '->' + destinationHostName);
     colorEdge(destinationHostName + '->' + packet.destination_ip_address);
 
-    colorEdge(packet.source_ip_address, uniqueNodeName);
-    colorEdge(uniqueNodeName, packet.destination_ip_address);
-    colorEdge(packet.destination_ip_address, uniqueNodeName);
-    colorEdge(uniqueNodeName, packet.source_ip_address);
+    colorEdge(packet.source_ip_address, packet.destination_ip_address);
+    // colorEdge(uniqueNodeName, packet.destination_ip_address);
+    // colorEdge(packet.destination_ip_address, uniqueNodeName);
+    // colorEdge(uniqueNodeName, packet.source_ip_address);
   }
 }
 
 function colorEdge(source, target) {
   var edge = nodeMap.getElementById(source + '->' + target);
   if (edge.length > 0) {
-    trafficLineColor = resolveProtocol(packet.protocol);
+    trafficLineColor = resolveProtocol(packet.protocol, unique, trafficColors);
     
-    edgeId = createEdgeId(packet);
-    if (edgeId != null)
-    {
-      uniqueProtocol(packet.protocol,unique,trafficColors); //needs to be before edge creation /animation to update color list
-      var edge = nodeMap.getElementById(edgeId);
-
-      trafficLineColor = resolveProtocol(packet.protocol, unique, trafficColors);
-      edge.animate({
+    uniqueProtocol(packet.protocol,unique,trafficColors); //needs to be before edge creation /animation to update color list
+    edge.animate({
+      style: {
+        lineColor: trafficLineColor
+      },
+      duration: 600,
+      easing: 'ease-in-sine'
+    }).animate({
         style: {
-          lineColor: trafficLineColor
+          lineColor: defaultLineColor
         },
         duration: 600,
-        easing: 'ease-in-sine'
-      }).animate({
-          style: {
-            lineColor: defaultLineColor
-          },
-          duration: 600,
-          easing: 'ease-out-sine'
-      });
-    }
+        easing: 'ease-out-sine'
+    });
   }
 }
 
@@ -430,30 +417,30 @@ function removeNode(packet, id) {
 }
 
 function resolveProtocol(protocolCode, protocolArray, colorArray){
-    var output;
-    let colorIndex = protocolArray.indexOf(protocolCode);
-    if (colorIndex>COLOR_COUNT){
-        colorIndex = COLOR_COUNT;
-    }
+  var output;
+  let colorIndex = protocolArray.indexOf(protocolCode);
+  if (colorIndex>COLOR_COUNT){
+      colorIndex = COLOR_COUNT;
+  }
 
-    output = colorArray[colorIndex];
+  output = colorArray[colorIndex];
 
-    /*
-    switch (protocolCode){
-        case "TCP":
-            output = "green"
-            break;
-        case "UDP":
-            output = "blue";
-            break;
-        case "FTP":
-            output = "yellow";
-            break;
-        default:
-            output = "red";
-            break;
-    }*/
-    return output;
+  /*
+  switch (protocolCode){
+      case "TCP":
+          output = "green"
+          break;
+      case "UDP":
+          output = "blue";
+          break;
+      case "FTP":
+          output = "yellow";
+          break;
+      default:
+          output = "red";
+          break;
+  }*/
+  return output;
 }
 
 // https://stackoverflow.com/a/34818545
