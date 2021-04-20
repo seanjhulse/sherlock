@@ -8,6 +8,10 @@ var radius = 500;
 var theta = 0;
 var graphFit = false;
 var trafficLineColor = "red";
+var unique = [];
+var trafficColors = ['green', 'blue', 'yellow', 'orange','purple','red']
+const COLOR_COUNT = trafficColors.length-1;
+
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -307,8 +311,11 @@ function addPacket(packet)
   edgeId = createEdgeId(packet);
   if (edgeId != null)
   {
+
+    uniqueProtocol(packet.protocol,unique,trafficColors); //needs to be before edge creation /animation to update color list
     var edge = nodeMap.getElementById(edgeId);
-    trafficLineColor = resolveProtocol(packet.protocol);
+
+    trafficLineColor = resolveProtocol(packet.protocol, unique, trafficColors);
     edge.animate({
       style: {
         lineColor: trafficLineColor
@@ -341,19 +348,47 @@ function removeNode(packet, id)
     nodeCache.splice(index, 1);
   }
 }
-function resolveProtocol(protocolCode){
+function resolveProtocol(protocolCode, protocolArray, colorArray){
     var output;
+    let colorIndex = protocolArray.indexOf(protocolCode);
+    if (colorIndex>COLOR_COUNT){
+        colorIndex = COLOR_COUNT;
+    }
+
+    output = colorArray[colorIndex];
+
+    /*
     switch (protocolCode){
         case "TCP":
             output = "green"
             break;
         case "UDP":
-            //stand in for UDP until I figure out what that is;
             output = "blue";
+            break;
+        case "FTP":
+            output = "yellow";
             break;
         default:
             output = "red";
             break;
-    }
+    }*/
     return output;
+}
+//log unique protocol values
+function uniqueProtocol(protocolCode, uniqueArray,colorArray){
+
+    if (uniqueArray.indexOf(protocolCode)==-1){
+        uniqueArray.push(protocolCode);
+        console.log(uniqueArray);
+        updateLegend(protocolCode,uniqueArray,colorArray)
+    }
+}
+function updateLegend(protocolCode, protocolArray, colorArray){
+
+    var node = document.createElement('p');
+    node.appendChild(document.createTextNode(protocolCode));
+    node.style.cssText = "color:" + colorArray[protocolArray.indexOf(protocolCode)];
+    var element = document.getElementById('legend');
+    element.appendChild(node);
+
 }
