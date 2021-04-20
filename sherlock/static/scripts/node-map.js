@@ -10,6 +10,7 @@ var graphFit = false;
 var trafficLineColor = "red";
 var unique = [];
 var trafficColors = ['green', 'blue', 'yellow', 'orange','purple','red']
+const COLOR_COUNT = trafficColors.length-1;
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -349,8 +350,12 @@ function removeNode(packet, id)
 }
 function resolveProtocol(protocolCode, protocolArray, colorArray){
     var output;
+    let colorIndex = protocolArray.indexOf(protocolCode);
+    if (colorIndex>COLOR_COUNT){
+        colorIndex = COLOR_COUNT;
+    }
 
-    output = colorArray[protocolArray.indexOf(protocolCode)];
+    output = colorArray[colorIndex];
 
     /*
     switch (protocolCode){
