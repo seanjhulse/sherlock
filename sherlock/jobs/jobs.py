@@ -4,6 +4,7 @@ from django.utils import timezone
 from django_apscheduler.models import DjangoJobExecution
 from django.db import transaction
 from sherlock.models import Packet, Scan
+
 import schedule, sys, time, json, nmap
 from ..osdata import get_ip
 from ..socket_sniffer import SocketSniffer
