@@ -3,11 +3,22 @@
 // Setup global variables
 var nodeMap;
 const defaultLineColor = "#444";
-const nodeCache = []
-var radius = 500;
-var theta = 0;
 var graphFit = false;
 var trafficLineColor = "red";
+
+const layoutOptions = {
+  autounselectify: true,
+  avoidOverlap: true,
+  animate: true,
+  maxSimulationTime: 4000,
+  refresh: 1,
+  nodeDimensionsIncludeLabels: true,
+  boxSelectionEnabled: false,
+  randomize: false,
+  nodeSpacing: function( node ){ return 50; },
+};
+
+var MY_IP = '10.0.2.15';
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -19,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const data = JSON.parse(dataNode.dataset.context);
 
-    const MY_IP = data.ip
+    MY_IP = data.ip
     console.log("host ip address is: " + MY_IP);
 
 
@@ -29,16 +40,14 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('/delete-all')
     .then(res => {
       nodeMap.elements().remove();
+      createLocalHost(MY_IP);
     })
   })
 
   // Start Cytoscape
   nodeMap = window.cy = cytoscape({
     container: document.getElementById('node-map'),
-    autounselectify: true,
-    maxZoom: 1,
-    boxSelectionEnabled: false,
-    layout: { name: 'cola' },
+    layout: { name: 'cola', ...layoutOptions },
     style: [
       {
         selector: 'node',
@@ -169,7 +178,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // Everytime a websocket sends a message...
     socket.onmessage = function (e) {
       const message = JSON.parse(e.data);
-      handleMessage(message)
+      handleMessage(message);
+
+      if (graphFit)
+      {
+        const map = nodeMap.layout({name: 'cola', ...layoutOptions, fit: false});
+        map.run();
+      } else {
+        const map = nodeMap.layout({name: 'cola', ...layoutOptions, fit: true});
+        map.run();
+        graphFit = true;
+      }
+
     };
     // When the socket closes...
     socket.onclose = function (e) {
@@ -191,6 +211,18 @@ function createEdges(packet) {
   }
 }
 
+function createEdge(source, target, port) {
+  return {
+    group: 'edges',
+    data: {
+      id: source + '->' + target,
+      source: source,
+      target: target,
+      label: port,
+    }
+  }
+}
+
 function handleMessage(message)
 {
   const data = JSON.parse(message.message);
@@ -200,28 +232,20 @@ function handleMessage(message)
   }
 }
 
-function createNode(id, hostName) {
-
-  if (!nodeCache.includes(id)) {
-    // Increment theta
-    theta = theta + 5;
-    if (theta > 360) {
-      theta = 0;
-      radius = radius * 1.25;
-    }
-  }
+function createNode(id) {
   return {
     group: 'nodes',
     data: {
       id: id,
-      label: hostName ? hostName : id
+      label: id
     },
     position: {
-      x: radius * Math.cos(theta),
-      y: radius * Math.sin(theta)
+      x: 0,
+      y: 0
     }
   }
 }
+
 function createLocalHost(id) {
   return {
     group: 'nodes',
@@ -229,22 +253,15 @@ function createLocalHost(id) {
       id: id,
       label: 'This Computer'
     },
-    position: {
-      x: 0,
-      y: 0
-    },
   }
 }
 
-
-function createEdgeId(packet)
-{
+function createEdgeId(packet) {
   return packet.source_ip_address + "->" + packet.destination_ip_address;
 }
 
 // Initialize the graph based on previous data in the database
-function initGraph()
-{
+function initGraph() {
   console.log("Initializing the node map...")
   // This fetches nodes within 1-minute of our current time (ie. all nodes saved 1 minute ago)
   fetch('/nodes/5', {
@@ -259,13 +276,13 @@ function initGraph()
   });
 }
 
-function addPacket(packet)
-{
+function addPacket(packet) {
   const closeConnectionFlag = packet.flags === "FIN";
   const sourceIP = packet.source_ip_address;
   const destinationIP = packet.destination_ip_address;
 
   // If the FIN flag has been set, we should remove the node (the connection is closed)
+  console.log(packet.flags);
   if (closeConnectionFlag) {
     if (destinationIP != "10.0.2.15" && destinationIP != "127.0.0.1") {
       removeNode(packet, packet.destination_ip_address)
@@ -275,39 +292,99 @@ function addPacket(packet)
     }
   } else {
 
+    // Create the source and destination nodes
     const sourceNode = nodeMap.$(`[id="${sourceIP}"]`);
     if (sourceNode.length <= 0) {
-      nodeMap.add(createNode(sourceIP, packet.source_host_name));
+      nodeMap.add(createNode(sourceIP));
     }
-
     const destinationNode = nodeMap.$(`[id="${destinationIP}"]`);
     if (destinationNode.length <= 0) {
-      nodeMap.add(createNode(destinationIP, packet.destination_host_name));
-    }
-    
-    const edgeId = createEdgeId(packet);
-    const edgeNode = nodeMap.$(`[id="${edgeId}"]`)
-    if (edgeNode.length <= 0)
-    {
-      edges = createEdges(packet);
-      nodeMap.add(edges);
+      nodeMap.add(createNode(destinationIP));
     }
 
-    nodeCache.push(sourceIP);
-    nodeCache.push(destinationIP);
-  }
-    
+    const port = packet.source_port ? packet.source_port : packet.destination_port;
 
-  if (!graphFit)
-  {
-    nodeMap.fit();
-    graphFit = true;
+    // Create the intermediary nodes (if they exist)
+    const sourceHostName = domainFromUrl(packet.source_host_name);
+    const destinationHostName = domainFromUrl(packet.destination_host_name);
+    const uniqueNodeName = 'unknown domain';
+   
+    const sourceHostNode = nodeMap.$(`[id="${sourceHostName}"]`);
+    const destinationHostNode = nodeMap.$(`[id="${destinationHostName}"]`);
+    if (sourceHostName !== undefined && sourceHostName !== 'undefined' && sourceHostNode.length <= 0) {
+      nodeMap.add(createNode(sourceHostName));
+      
+      // Edge from source -> intermediary
+      var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + sourceHostName}"]`)
+      if (edgeNode.length <= 0)
+      {
+        edges = createEdge(packet.source_ip_address, sourceHostName, port);
+        nodeMap.add(edges);
+      }
+
+      // Edge from intermediary -> end
+      edgeNode = nodeMap.$(`[id="${sourceHostName + '->' + packet.destination_ip_address}"]`)
+      if (edgeNode.length <= 0)
+      {
+        edges = createEdge(sourceHostName, packet.destination_ip_address, port);
+        nodeMap.add(edges);
+      }
+    } else if (destinationHostName !== undefined && destinationHostName !== 'undefined' && destinationHostNode.length <= 0) {
+      nodeMap.add(createNode(destinationHostName));
+      
+      // Edge from source -> intermediary
+      var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + destinationHostName}"]`)
+      if (edgeNode.length <= 0)
+      {
+        edges = createEdge(packet.source_ip_address, destinationHostName, port);
+        nodeMap.add(edges);
+      }
+
+      // Edge from intermediary -> end
+      edgeNode = nodeMap.$(`[id="${destinationHostName + '->' + packet.destination_ip_address}"]`)
+      if (edgeNode.length <= 0)
+      {
+        edges = createEdge(destinationHostName, packet.destination_ip_address, port);
+        nodeMap.add(edges);
+      }
+    } else {
+      const uniqueNode = nodeMap.$(`[id="${uniqueNodeName}"]`)
+      if (uniqueNode.length <= 0) {
+        nodeMap.add(createNode(uniqueNodeName));
+      }
+
+      // Edge from source -> intermediary
+      var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + uniqueNodeName}"]`)
+      if (edgeNode.length <= 0)
+      {
+        edges = createEdge(packet.source_ip_address, uniqueNodeName, port);
+        nodeMap.add(edges);
+      }
+
+      // Edge from intermediary -> end
+      edgeNode = nodeMap.$(`[id="${uniqueNodeName + '->' + packet.destination_ip_address}"]`)
+      if (edgeNode.length <= 0)
+      {
+        edges = createEdge(uniqueNodeName, packet.destination_ip_address, port);
+        nodeMap.add(edges);
+      }
+    }
+
+    colorEdge(packet.source_ip_address + '->' + sourceHostName);
+    colorEdge(sourceHostName + '->' + packet.destination_ip_address);
+    colorEdge(packet.source_ip_address + '->' + destinationHostName);
+    colorEdge(destinationHostName + '->' + packet.destination_ip_address);
+
+    colorEdge(packet.source_ip_address, uniqueNodeName);
+    colorEdge(uniqueNodeName, packet.destination_ip_address);
+    colorEdge(packet.destination_ip_address, uniqueNodeName);
+    colorEdge(uniqueNodeName, packet.source_ip_address);
   }
-  
-  edgeId = createEdgeId(packet);
-  if (edgeId != null)
-  {
-    var edge = nodeMap.getElementById(edgeId);
+}
+
+function colorEdge(source, target) {
+  var edge = nodeMap.getElementById(source + '->' + target);
+  if (edge.length > 0) {
     trafficLineColor = resolveProtocol(packet.protocol);
     edge.animate({
       style: {
@@ -325,23 +402,21 @@ function addPacket(packet)
   }
 }
 
-function removeNode(packet, id)
-{
-  const node = nodeMap.$(`[id="${id}"]`);
-  const nodeEdgeId = createEdgeId(packet);
-  const nodeEdge = nodeMap.$(`[id="${nodeEdgeId}"]`);
-  
-  console.log("Removing node:", id)
+function removeNode(packet, id) {
+  const source_nodes = nodeMap.$(`[id*="${id}"]`);
+  console.log("Removing nodes:", source_nodes)
+  nodeMap.remove(source_nodes);
 
-  nodeMap.remove(node);
-  nodeMap.remove(nodeEdge);
+  var alt_nodes = nodeMap.$(`[id*="${packet.sourceHostName}"]`);
+  console.log("Removing nodes:", alt_nodes)
+  nodeMap.remove(alt_nodes);
 
-  const index = nodeCache.indexOf(id);
-  if (index > -1) {
-    nodeCache.splice(index, 1);
-  }
+  alt_nodes = nodeMap.$(`[id*="${packet.destinationHostName}"]`);
+  console.log("Removing nodes:", alt_nodes)
+  nodeMap.remove(alt_nodes);
 }
-function resolveProtocol(protocolCode){
+
+function resolveProtocol(protocolCode) {
     var output;
     switch (protocolCode){
         case "TCP":
@@ -356,4 +431,25 @@ function resolveProtocol(protocolCode){
             break;
     }
     return output;
+}
+
+// https://stackoverflow.com/a/34818545
+function domainFromUrl(url) {
+  if (url === undefined || url === "undefined" || url === null) {
+    return undefined;
+  }
+  var result
+  var match
+  if (match = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im)) {
+      result = match[1]
+      while (match = result.match(/^[^\.]+\.(.+\..+)$/)) {
+        result = match[1]
+        
+      }
+  }
+  if (result.includes('.')) {
+    return result;
+  }
+
+  return undefined;
 }
