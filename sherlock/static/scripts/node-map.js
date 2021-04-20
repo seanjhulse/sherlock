@@ -1,5 +1,3 @@
-
-
 // Setup global variables
 var nodeMap;
 const defaultLineColor = "#444";
@@ -9,9 +7,9 @@ var theta = 0;
 var graphFit = false;
 var trafficLineColor = "red";
 var unique = [];
+var MY_SYSTEM;
 var trafficColors = ['green', 'blue', 'yellow', 'orange','purple','red']
 const COLOR_COUNT = trafficColors.length-1;
-import { getIcon } from './localhost.js'
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -26,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const MY_IP = data.ip
     console.log("host ip address is: " + MY_IP);
-    const MY_SYSTEM = data.os;
+    MY_SYSTEM = data.os;
     console.log('host os is: ' + MY_SYSTEM);
 
 
@@ -251,7 +249,6 @@ function createLocalHost(id) {
         shape: 'roundrectangle',
          width: 100,
          height: 100,
-        //  'background-image': '../../static/images/linux-icon.png',
         'background-image': getIcon(MY_SYSTEM),
         'background-color': '#F9F9F9'
     }
@@ -409,4 +406,31 @@ function updateLegend(protocolCode, protocolArray, colorArray){
     var element = document.getElementById('legend');
     element.appendChild(node);
 
+}
+
+function getIcon(os) {
+    _osIcon = "../../static/images/default-logo.png";
+
+    switch (os) {
+
+        case "Windows":
+            _osIcon = "../../static/images/windows-10-icon.png";
+            break;
+        case "Darwin":
+            _osIcon = "../../static/images/ios-icon.png";
+            break;
+        case "Linux":
+            _osIcon = "../../static/images/linux-icon.png";
+            break;
+        case "Android":
+            _osIcon = "../../static/images/android-icon.png";
+            break;
+        case "Chrome OS":
+            _osIcon = "../../static/images/chrome-os-icon.png";
+            break;
+        default:
+            _osIcon = "../../static/images/default-icon.png";
+    }
+
+    return _osIcon
 }
