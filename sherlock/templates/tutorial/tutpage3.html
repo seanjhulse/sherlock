@@ -47,13 +47,23 @@
     </nav>
 
     <div class="info_section">
-      <div style="position: relative; width: 1440px; height: 800px;" class="info_box">
+      <div style="position: relative; width: 1440px; height: 1800px;" class="info_box">
           <span></span>
           <div class="info_content">
               <h2>SherLOCK - Brief Introduction to Network Protocols</h2>
               <p>
                 <br>
-                HTTP is available on port 80, and HTTPS is on port 443.
+                To begin deciphering the meaning behind the Nodemap, we must first begin by understanding what the individual components mean.<br><br>
+                First, let's address the numbers that appear on the edges of the Nodemap.<br>
+                These are port numbers. They describe what ports on a server are active entrances and exits for incoming/exiting data. Certain ports are assigned to perform different functions.<br>
+                The most common port numbers you can expect to encounter are:<br><br>
+                &emsp;- 80<br>
+                &emsp;- 443<br><br>
+                Port 80 is by default used for HTTP (Hyper Text Transfer Protocol) connections. Port 443 is used for HTTPS (Hyper Text Transfer Protocol Secure) connections.<br><br>
+                Often you'll see something like the following:
+                <img width="1280" height="720" src="{% static 'images/nodemap-ports.png' %}"/><br>
+                Where you'll see a connection between the host node "This Computer" and some other node "server-13-226-234-70.lax50.r.cloudfront.net" with two curves connecting the two nodes.
+                Port 443 represents the transfer of data from the server to the local host (you) and the randomly assigned port number represents the return transfer of data from you to the server.
                 <br><br>
               </p>
               <a href="/tutpage2">Previous</a>
