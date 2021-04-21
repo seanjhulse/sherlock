@@ -329,4 +329,35 @@
   border-radius: 4px;
 }
 
+#urlLoader {
+    display: none;
+}
 
+.widget {
+  position: absolute;
+  font-size: 1rem;
+  float: right;
+  width: 300px;
+  z-index: 9;
+  background-color: #F1F1F1;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.headerbar {
+  float: left;
+  width: 250px;
+  padding: 14px;
+  font-size: 1rem;
+  cursor:move;
+  z-index:10;
+  background-color: #2196F3;
+  color: #fff;
+  background-image: linear-gradient(to top, #104e8b 0%, #ab82bf 100%);
+  border-radius: 4px;
+}
+
+.closeButton {
+    float:right;
+    height: 45px;
+}

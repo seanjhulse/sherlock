@@ -39,14 +39,15 @@
 		</div>
 	</nav>
 	<!-- Legend -->
-	<div id = "legend">
+	<div id = "legend" class = "draggable">
 		<div id = "legendheader">Legend</div>
-		<!--<p style="color: green"c>TCP/IP</p>
-		<p style="color: blue">UDP</p>
-		<p style="color: red">Other</p>-->
+		<!--<div id = "closeButton">X</div>-->
 	</div>
 
-  <div id="data" data-context="{{ context }}" />
+    <div id="data" data-context="{{ context }}" />
+
+	<!-- Loader -->
+	<div id='urlLoader'></div>
 
 	<!-- Main Section -->
 	<div class="main">

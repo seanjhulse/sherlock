@@ -154,6 +154,76 @@ document.addEventListener('DOMContentLoaded', function () {
     ]
 
   });
+  //context menu for ports
+  //inspect connection details (pop up closable menu with connection data)
+  //block port via uncomplicated firewall
+  //block connection by IP
+
+    nodeMap.cxtmenu({
+    selector: 'edge',
+    adaptativeNodeSpotlightRadius: false,
+    activeFillColor: 'rgba(113, 110, 212, 1)',
+    commands: [
+      {
+        content: 'Inspect Connection',
+        select: function(ele){
+
+
+        edgeLabel = ele.data('id') ;
+        sourceIP = ele.data('source');
+        targetIP = ele.data('target');
+        edgePort = ele.data('label');
+        edgeProtocol = ele.data('protocol');
+
+
+
+        console.log(edgeLabel, sourceIP, targetIP, edgePort, edgeProtocol)
+
+        createInspectionDiv(edgeLabel, sourceIP, targetIP, edgeProtocol, edgePort);
+
+
+        }
+      },
+      {
+        content: 'Block Port',
+        select: function(ele){
+
+            sourceIP = ele.data('source');
+            targetIP = ele.data('target');
+            edgePort = ele.data('label');
+
+            blockType =  (targetIP==MY_IP) ? "out" : "in";
+            blockTarget = edgePort;
+
+            scriptURL = '/block-connection/' + blockType + '/' + blockTarget + '/'
+
+            $(function(scriptURL) {
+                console.log("hit " + scriptURL)
+                $('#urlLoader').load(scriptURL);
+            }(scriptURL));
+        }
+      },
+      {
+        content: 'Block Host',
+        select: function(ele){
+
+            sourceIP = ele.data('source');
+            targetIP = ele.data('target');
+            edgePort = ele.data('label');
+
+            blockType =  "host";
+            blockTarget = (targetIP==MY_IP) ? sourceIP : targetIP;
+
+            scriptURL = '/block-connection/' + blockType + '/' + blockTarget + '/'
+
+            $(function(scriptURL) {
+                console.log("hit " + scriptURL)
+                $('#urlLoader').load(scriptURL);
+            }(scriptURL));
+        }
+      }
+    ]
+  });
   //create host
   nodeMap.add(createLocalHost(MY_IP));
 
@@ -191,6 +261,7 @@ function createEdges(packet) {
       source: packet.source_ip_address,
       target: packet.destination_ip_address,
       label: packet.source_port,
+      protocol: packet.protocol,
     }
   }
 }
@@ -357,21 +428,6 @@ function resolveProtocol(protocolCode, protocolArray, colorArray){
 
     output = colorArray[colorIndex];
 
-    /*
-    switch (protocolCode){
-        case "TCP":
-            output = "green"
-            break;
-        case "UDP":
-            output = "blue";
-            break;
-        case "FTP":
-            output = "yellow";
-            break;
-        default:
-            output = "red";
-            break;
-    }*/
     return output;
 }
 //log unique protocol values
@@ -391,4 +447,50 @@ function updateLegend(protocolCode, protocolArray, colorArray){
     var element = document.getElementById('legend');
     element.appendChild(node);
 
+}
+
+function createInspectionDiv(label, source, target, protocol, port){
+    var container = document.createElement("div");
+    var menuid = label + "inspectionmenu";
+    container.className = "draggable widget";
+    container.id = menuid;
+	container.style.top = '500px';
+	container.style.left = '1000px';
+
+    var header = document.createElement("div");
+    header.id = label + "inspectionmenuheader";
+    header.className = "headerbar";
+    header.innerHTML = protocol + " on " + port;
+
+    var closeButton = document.createElement("button");
+    closeButton.className = 'closeButton';
+    closeButton.innerHTML = "X";
+    closeButton.onclick = function() { document.getElementById(menuid).remove(); };
+
+
+    container.appendChild(header);
+    container.appendChild(closeButton);
+
+    pSourceIP = document.createElement('p');
+    pSourceIP.innerHTML = "Source IP: " + source;
+    pSourceIP.style.textAlign = "left";
+    container.appendChild(pSourceIP);
+
+    pTargetIP = document.createElement('p');
+    pTargetIP.innerHTML = "Destination IP: " + target;
+    pTargetIP.style.textAlign = "left";
+    container.appendChild(pTargetIP);
+
+
+    document.body.appendChild(container);
+
+
+    for (i = 0; i<draggableElements.length; i++){
+        dragElement(draggableElements[i]);
+    }
+
+}
+function closeDiv(ele){
+    console.log("closing " + ele);
+    getElementById(ele).remove();
 }

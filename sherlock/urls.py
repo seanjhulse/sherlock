@@ -19,4 +19,5 @@ urlpatterns = [
     path('host-node', views.host_node, name='host-node'),
     path('nodes/<int:minutes>/', views.get_nodes, name='get-nodes'),
     path('delete-all/', views.delete_all, name='delete-all'),
+    path('block-connection/<str:blocktype>/<str:blocktarget>/',views.ufw_block, name="block-connection"),
 ]

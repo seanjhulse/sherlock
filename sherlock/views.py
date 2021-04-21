@@ -11,6 +11,7 @@ import datetime
 import socket
 import nmap
 from .osdata import get_op_sys, get_ip, map_net, scan_network
+import pyufw as ufw
 
 import json
 
@@ -140,4 +141,17 @@ def portpage(request, ajaxip):
     my_ip = ajaxip
     ports = json.dumps(ports)
     context = {'ports': ports, 'os': system(), 'ip': my_ip }
-    return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)}) 
+    return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)})
+
+def ufw_block(request,blocktype,blocktarget):
+
+    if (blocktype == "in") | (blocktype == "out"):
+        ufw.add("deny " + blocktype + " " + blocktarget)
+
+    elif blocktype == "host":
+        ufw.add("deny from " + blocktarget + " to any")
+
+    if ufw.status() == "active":
+        ufw.reload()
+    elif ufw.status() == "inactive":
+        ufw.enable()
