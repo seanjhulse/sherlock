@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const MY_IP = data.ip
     console.log("host ip address is: " + MY_IP);
     MY_SYSTEM = data.os;
-    console.log('host os is: ' + MY_SYSTEM);
 
 
   // Clear Graph Button

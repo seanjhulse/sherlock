@@ -78,3 +78,11 @@ def get_ip():
 def scan_network(ip):
     nm = nmap.PortScanner()
     return nm.scan(hosts=ip, arguments='-O -T5 -n --max-parallelism=255 --min-parallelism=100')
+
+def get_vendor(ip):
+    cidr = ip + "/24"	
+    nm = nmap.PortScanner()
+    scan_results = nm.scan(hosts=cidr, arguments='-sP')
+    filtered = scan_results['scan'][ip]['vendor']
+    vendor = list(filtered.values())
+    return vendor[0]
