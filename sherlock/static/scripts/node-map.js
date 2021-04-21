@@ -237,15 +237,15 @@ function handleMessage(message)
 }
 
 function createNode(id) {
-  var NODE_SYSTEM;
-  $.ajax({
-      type: 'GET',
-      url: '/network-os/'.concat(id),
-      data: {ip: id}
-  }).done(function(o){
-    NODE_SYSTEM = o;
-    console.log('node os: ' + NODE_SYSTEM);
-  });
+  var NODE_SYSTEM = 'default';
+  //$.ajax({
+  //    type: 'GET',
+  //    url: '/network-os/'.concat(id),
+  //    data: {ip: id}
+  //}).done(function(o){
+  //  NODE_SYSTEM = o;
+  //  console.log('node os: ' + NODE_SYSTEM);
+  //});
   return {
     group: 'nodes',
     data: {
@@ -260,8 +260,8 @@ function createNode(id) {
           shape: 'roundrectangle',
           width:65,
           height: 65, 
-          //'background-image': '../../static/images/default-icon.png',
-          'background-image' : getIcon(NODE_SYSTEM),
+          'background-image': '../../static/images/default-icon.png',
+          //'background-image' : getIcon(NODE_SYSTEM),
           'background-color': '#F9F9F9'
     }
   }
