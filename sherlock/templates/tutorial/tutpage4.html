@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Tutorial - Beginning</title>
+    <title>Tutorial - Context Menu</title>
 
     {% load static %}
     <!--Example of linking to javascript-->
@@ -47,13 +47,38 @@
     </nav>
 
     <div class="info_section">
-      <div style="position: relative; width: 420px; height: 550px;" class="info_box">
+      <div style="position: relative; width: 1440px; height: 2800px;" class="info_box">
           <span></span>
           <div class="info_content">
-              <h2>SherLOCK - Part 4</h2>
+              <h2>SherLOCK - Context Menu</h2>
               <p>
                 <br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                As interesting as it may be to watch your screen flash color to signify data packet transfer from server to client and back, 
+                it doesn't allow for much interaction from the user. To address this we added a context menu.
+                <br><br>
+                To access the context menu, you can either left click and hold a node until the menu appears or you can right-click a node to access the context menu.
+                <br>
+                <img width="1280px" height="720px" src="{% static 'images/nodemap-contextmenu.png' %}"/>
+                <br><br>
+                Moving your cursor towards the ring allows you to select different functions offered by the Nodemap.
+                <br><br>
+                To the top left of the context menu,
+                <br>
+                <img src="{% static 'images/nodemap-contextmenuselect1.png' %}"/>
+                <br>
+                copies the node's IP address to your clipboard.
+                <br><br>
+                To the top right of the context menu,
+                <br>
+                <img src="{% static 'images/nodemap-contextmenuselect2.png' %}"/>
+                <br>
+                allows you to see other clients connected to that particular server node.
+                <br><br>
+                And finally to the bottom of the context menu,
+                <br>
+                <img src="{% static 'images/nodemap-contextmenuselect3.png' %}"/>
+                <br>
+                allows you to scan for all other open ports on the server node.
                 <br><br>
               </p>
               <a href="/tutpage4">Previous</a>
@@ -69,7 +94,7 @@
       window.onscroll = scrollShowNav;
       function scrollShowNav() {
          if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            document.getElementsByTagName("nav")[0].style.top = "-50px";
+            document.getElementsByTagName("nav")[0].style.top = "-100px";
          } else {
             document.getElementsByTagName("nav")[0].style.top = "0px";
          }

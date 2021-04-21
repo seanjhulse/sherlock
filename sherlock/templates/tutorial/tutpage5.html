@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Tutorial - Beginning</title>
+    <title>Tutorial - Ending</title>
 
     {% load static %}
     <!--Example of linking to javascript-->
@@ -47,13 +47,17 @@
     </nav>
 
     <div class="info_section">
-      <div style="position: relative; width: 420px; height: 400px;" class="info_box">
+      <div style="position: relative; width: 520px; height: 500px;" class="info_box">
           <span></span>
           <div class="info_content">
               <h2>End of Tutorial</h2>
               <p>
                 <br>
-                Bottom text
+                Congratulations on making it to the end of the tutorial!
+                <br><br>
+                You should now be able to take full advantage of the features SherLOCK has to offer.
+                <br><br>
+                Stay safe out there!
                 <br><br>
               </p>
               <a href="/node-map">Proceed to Node Map</a>
@@ -68,7 +72,7 @@
       window.onscroll = scrollShowNav;
       function scrollShowNav() {
          if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            document.getElementsByTagName("nav")[0].style.top = "-50px";
+            document.getElementsByTagName("nav")[0].style.top = "-100px";
          } else {
             document.getElementsByTagName("nav")[0].style.top = "0px";
          }
