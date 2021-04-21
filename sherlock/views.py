@@ -10,7 +10,7 @@ from platform import system
 import datetime
 import socket
 import nmap
-from .osdata import get_op_sys, get_ip, map_net, scan_network
+from .osdata import get_op_sys, get_ip, map_net, scan_network, get_vendor
 
 import json
 
@@ -63,8 +63,16 @@ def network_traffic(request, port):
     return render(request, 'examples/websockets/index.html')
 
 
-def network_operating_systems(request):
-    return HttpResponse('The operating systems on this network are: %s' % (get_op_sys(map_net())))
+def network_operating_systems(request, ip):
+    ''' I tried getting the following working but there were issues, namely:
+        1. The os scan process using nmap or nmap3 slowed down the node map considerably
+        2. Inaccurate results would come back for mostly every other node that wasn't on a local network
+    '''
+    # 
+    # vendor = get_vendor(ip)
+    vendor = 'default'
+    return HttpResponse(vendor)
+    # return HttpResponse('The operating systems on this network are: %s' % (get_op_sys(map_net())))
 
 def host_scan_all(request, ipaddress):
 	""" Scan an ipaddress for other hosts """
