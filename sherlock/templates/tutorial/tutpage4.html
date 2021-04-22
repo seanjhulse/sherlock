@@ -47,7 +47,7 @@
     </nav>
 
     <div class="info_section">
-      <div style="position: relative; width: 1440px; height: 2800px;" class="info_box">
+      <div style="position: relative; width: 1440px; height: 4650px;" class="info_box">
           <span></span>
           <div class="info_content">
               <h2>SherLOCK - Context Menu</h2>
@@ -80,8 +80,22 @@
                 <br>
                 allows you to scan for all other open ports on the server node.
                 <br><br>
+                You are also able to access a context menu from the edge of two nodes.
+                <br>
+                <img width="1280px" height="720px" src="{% static 'images/nodemap-edgecontextmenu.png' %}"/>
+                <br><br>
+                Moving your cursor to the top left allows you to inspect that particular connection. This draws a small menu onto the screen that display information about 
+                that connection such as Source and Destination IP Addresses and the type of internet protocol it uses (TCP, UDP, etc.).
+                <br>
+                <img src="{% static 'images/nodemap-edgecontextselection.png' %}"/>
+                <img src="{% static 'images/nodemap-edgecontextconnectioninfo.png' %}"/>
+                <br><br>
+                Moving your cursor to the top right blocks all current and future connection with that particular server node
+                <br>
+                and moving your cursor to the bottom of the context menu blocks only that one port from that server node.
+                <br><br>
               </p>
-              <a href="/tutpage4">Previous</a>
+              <a href="/tutpage3">Previous</a>
               <a href="/tutpage5">Next</a>
           </div>
       </div>
