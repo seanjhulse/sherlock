@@ -1,11 +1,10 @@
-
-
 // Setup global variables
 var nodeMap;
 const defaultLineColor = "#444";
 var graphFit = false;
 var trafficLineColor = "red";
 var unique = [];
+var MY_SYSTEM;
 var trafficColors = ['green', 'blue', 'yellow', 'orange','purple','red']
 const COLOR_COUNT = trafficColors.length-1;
 
@@ -36,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     MY_IP = data.ip
     console.log("host ip address is: " + MY_IP);
+    MY_SYSTEM = data.os;
 
 
   // Clear Graph Button
@@ -237,6 +237,15 @@ function handleMessage(message)
 }
 
 function createNode(id) {
+  var NODE_SYSTEM = 'default';
+  //$.ajax({
+  //    type: 'GET',
+  //    url: '/network-os/'.concat(id),
+  //    data: {ip: id}
+  //}).done(function(o){
+  //  NODE_SYSTEM = o;
+  //  console.log('node os: ' + NODE_SYSTEM);
+  //});
   return {
     group: 'nodes',
     data: {
@@ -245,7 +254,15 @@ function createNode(id) {
     },
     position: {
       x: 0,
-      y: 0
+      y: 0,
+    },
+    style: {
+          shape: 'roundrectangle',
+          width:65,
+          height: 65, 
+          'background-image': '../../static/images/default-icon.png',
+          //'background-image' : getIcon(NODE_SYSTEM),
+          'background-color': '#F9F9F9'
     }
   }
 }
@@ -257,6 +274,13 @@ function createLocalHost(id) {
       id: id,
       label: 'This Computer'
     },
+    style: {
+        shape: 'roundrectangle',
+         width: 100,
+         height: 100,
+        'background-image': getIcon(MY_SYSTEM),
+        'background-color': '#F9F9F9'
+    }
   }
 }
 
@@ -479,4 +503,32 @@ function updateLegend(protocolCode, protocolArray, colorArray) {
     node.style.cssText = "color:" + colorArray[protocolArray.indexOf(protocolCode)];
     var element = document.getElementById('legend');
     element.appendChild(node);
+
+}
+
+function getIcon(os) {
+    _osIcon = "../../static/images/default-logo.png";
+
+    switch (os) {
+
+        case "Windows":
+            _osIcon = "../../static/images/windows-10-icon.png";
+            break;
+        case "Darwin":
+            _osIcon = "../../static/images/ios-icon.png";
+            break;
+        case "Linux":
+            _osIcon = "../../static/images/linux-icon.png";
+            break;
+        case "Android":
+            _osIcon = "../../static/images/android-icon.png";
+            break;
+        case "Chrome OS":
+            _osIcon = "../../static/images/chrome-os-icon.png";
+            break;
+        default:
+            _osIcon = "../../static/images/default-icon.png";
+    }
+
+    return _osIcon
 }

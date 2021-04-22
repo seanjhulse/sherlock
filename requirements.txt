@@ -1,0 +1,8 @@
+django
+channels
+django_apscheduler
+schedule
+python-nmap
+python3-nmap
+scapy
+dnspython
