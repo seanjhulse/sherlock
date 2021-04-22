@@ -465,8 +465,9 @@ function createInspectionDiv(label, source, target, protocol, port){
     var closeButton = document.createElement("button");
     closeButton.className = 'closeButton';
     closeButton.innerHTML = "X";
-    closeButton.onclick = function() { document.getElementById(menuid).remove(); };
-
+    closeButton.addEventListener("click", function() {
+        this.parentElement.remove()
+    });
 
     container.appendChild(header);
     container.appendChild(closeButton);

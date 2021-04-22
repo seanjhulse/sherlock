@@ -12,8 +12,9 @@
 	<script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
 	<script src="{% static 'scripts/cytoscape-cola.js' %}" type="text/javascript"></script>
 	<script src="{% static 'scripts/node-map.js' %}" type="text/javascript"></script>
-	<link rel="stylesheet" href="{% static 'css/cyto-styles.css' %}" />
 	<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+
+	<link rel="stylesheet" href="{% static 'css/cyto-styles.css' %}" />
 </head>
 
 <body>
@@ -34,6 +35,9 @@
 				<!--Home Button-->
 				<li class="navbar__item">
 					<a href="/" class="navbar__links"> Home </a>
+				</li>
+				<li class="navbar__item">
+					<a href="/ufw-rule-manager/" class="navbar__links"> Rule Manager </a>
 				</li>
 			</ul>
 		</div>

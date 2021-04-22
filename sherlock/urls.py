@@ -20,4 +20,6 @@ urlpatterns = [
     path('nodes/<int:minutes>/', views.get_nodes, name='get-nodes'),
     path('delete-all/', views.delete_all, name='delete-all'),
     path('block-connection/<str:blocktype>/<str:blocktarget>/',views.ufw_block, name="block-connection"),
+    path('ufw-rule-manager/', views.ufw_manager, name="ufw-rule-manager"),
+    path('ufw-delete-rule/<str:rule>/', views.ufw_delete_rule, name="ufw-delete-rule"),
 ]
