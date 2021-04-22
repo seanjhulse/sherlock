@@ -1,11 +1,25 @@
-# sherlock
+# Sherlock
 
-This is a DJango project.
+Welcome to **Sherlock**, a simple and easy-to-use network security visualization tool!
 
-## How-to
+![](/images/sherlock_homepage.png)
 
-### Make your own route
 
-1. Inside sherlock/views.py add your own method `def my_route(request, param)`
-2. Inside sherlock/urls.py add your own url: `path('my_route/<int:param>/', views.my_route, name='my_route'),`
-3. Now you can go to http://localhost:8000/my-route/1 and your route should be executed
+This web application is ideal for anyone who seeks to manage the security of their home network. To view the information, click the "Get Started" button!
+
+![](/images/sherlock_nodemap.png)
+
+
+To install the application, please adhere to the following steps:
+
+
+### 1. Make sure you're using a compatible browser (Edge, Firefox, Chrome, etc.)
+### 2. Run the following to take care of dependencies
+```
+$ pip install -r requirements.txt
+```
+### 3. To start the application
+
+```
+$ sudo python3 manage.py runserver
+```
