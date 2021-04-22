@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tutorial - Network Protocols</title>
+
+    {% load static %}
+    <!--Example of linking to javascript-->
+    <!-- <script src="{% static 'scripts/script.js' %}" type="text/javascript"></script> -->
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    
+    <!--Google Font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap" rel="stylesheet"/>
+  </head>
+  
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="navbar__container">
+        <!--App Logo-->
+        <a href="/" id="navbar__logo"
+          ><img
+            width="75"
+            height="75"
+            src="{% static 'images/SherLOCK - App Logo.png' %}"
+          />SherLOCK</a
+        >
+
+        <!--Hamburger Button-->
+        <div class="navbar__toggle" id="mobile-menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+
+        <ul class="navbar__menu">
+
+          <!--Example Item-->
+          <li class="navbar__item">
+            <a href="/" class="navbar__links"> Home </a>
+          </li>
+
+        </ul>
+      </div>
+    </nav>
+
+    <div class="info_section">
+      <div style="position: relative; width: 1440px; height: 2800px;" class="info_box">
+          <span></span>
+          <div class="info_content">
+              <h2>SherLOCK - Brief Introduction to Network Protocols</h2>
+              <p>
+                <br>
+                To begin deciphering the meaning behind the Nodemap, we must first begin by understanding what the individual components mean.<br><br>
+                First, let's address the numbers that appear on the edges of the Nodemap.<br>
+                These are port numbers. They describe what ports on a server are active entrances and exits for incoming/exiting data. Certain ports are assigned to perform different functions.<br>
+                The most common port numbers you can expect to encounter while using SherLOCK are:<br><br>
+                &emsp;- 80<br>
+                &emsp;- 443<br><br>
+                Port 80 is by default used for HTTP (Hyper Text Transfer Protocol) connections. Port 443 is used for HTTPS (Hyper Text Transfer Protocol Secure) connections.<br><br>
+                Often you'll see something like the following:
+                <img width="1280" height="720" src="{% static 'images/nodemap-ports.png' %}"/><br>
+                Where you'll see a connection between the host node "This Computer" and some other node "server-13-226-234-70.lax50.r.cloudfront.net" with two curves connecting the two nodes.
+                Port 443 represents the transfer of data from the server to the local host (you) and the randomly assigned port number represents the return transfer of data from you to the server.
+                <br><br>
+                If you look towards the upper left-hand corner of the Nodemap, you will notice a legend with some text in it.<br><br>
+                <img src="{% static 'images/nodemap-legend.png' %}"/><br><br>
+                This legend describes the different types of data packets we can expect to receive when using the Nodemap to observe network traffic.<br><br>
+                The most common forms of Internet Protocols you will experience are TCP (Transmission Control Protocol) and UDP (User Datagram Protocol).<br>
+                These two protocols are the most prevalent forms of data transfer. Both protocols are used to stream data, but the major difference between them is their execution.
+                <br><br>
+                <img src="{% static 'images/tcp.gif' %}"/><br>
+                TCP is connection-oriented. Meaning, that data does not begin to flow until a connection between streaming server and end-user (or client) is established. It is also checked for errors which aids reliability.
+                <br><br><br>
+                <img src="{% static 'images/udp.gif' %}"/><br>
+                UDP, in contrast, operates by constantly streaming data before a connection between server and client is established and is not checked for correctness or errors.
+                UDP is ideal for applications where correctness and error checks are not needed.
+                <br><br>
+                The vast majority of applications such as email, video-streaming, and online shopping sites operate off of TCP.
+                As such, you will commonly see the Nodemap flash a green color as data packets are sent and received along TCP routes.
+                <br><br>
+                Below is an example of TCP data packets being transmitted:
+                <br>
+                <img src="{% static 'images/nodemap-tcpreceived.png' %}"/>
+                <br><br>
+              </p>
+              <a href="/tutpage2">Previous</a>
+              <a href="/tutpage4">Next</a>
+          </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu  -->
+    <script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
+    <!-- Hide Nav Bar on Scroll -->
+    <script>
+      window.onscroll = scrollShowNav;
+      function scrollShowNav() {
+         if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementsByTagName("nav")[0].style.top = "-100px";
+         } else {
+            document.getElementsByTagName("nav")[0].style.top = "0px";
+         }
+      }
+    </script>
+  </body>
+</html>

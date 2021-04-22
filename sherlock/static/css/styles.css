@@ -5,6 +5,10 @@
   font-family: "Kumbh Sans", sans-serif;
 }
 
+body {
+  background: #141414;
+}
+
 .navbar {
   background: #131313;
   height: 80px;
@@ -313,7 +317,7 @@
   float: right;
   width: 150px;
   z-index: 9;
-  background-color: #F1F1F1;
+  background-color: #141414;
   text-align: center;
   border-radius: 4px;
 }
@@ -329,4 +333,200 @@
   border-radius: 4px;
 }
 
+.card_selection {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+  flex-wrap: wrap;
+}
 
+.card_selection .card {
+  position: relative;
+  width: 320px;
+  height: 400px;
+  color: #fff;
+  background: #141414;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px 35px;
+  transition: 0.5s;
+}
+
+/* Movement of Info Cards */
+.card_selection .card:hover {
+  transform: translateY(-15px);
+}
+
+.card_selection .card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg,  #104e8b, #ab82bf);
+}
+
+.card_selection .card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg,  #104e8b, #ab82bf);
+  filter: blur(30px);
+}
+
+.card_selection .card:nth-child(2)::before,
+.card_selection .card:nth-child(2)::after {
+  background: linear-gradient(315deg, #104e8b, #ab82bf);
+}
+
+.card_selection .card span {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  background: rgba(0,0,0,0.4);
+  z-index: 2;
+}
+
+.card_selection .card span::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+/* Moves text in front of gradient background */
+.card_selection .card .card_content {
+  position: relative;
+  z-index: 10;
+  padding: 20px 40px;
+}
+
+.card_selection .card .card_content h2 {
+  font-size: 2em;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.card_selection .card .card_content p {
+  font-size: 1.1em;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.4em;
+}
+
+.card_selection .card .card_content a {
+  display: inline-block;
+  font-size: 1.1em;
+  color: #fff;
+  background: linear-gradient(315deg, #002e5c, #6a3186);
+  padding: 10px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.info_section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+  flex-wrap: wrap;
+}
+
+.info_section .info_box {
+  position: relative;
+  width: 680px;
+  height: 420px;
+  color: #ffffff;
+  background: #141414;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 30px;
+  transition: 0.5s;
+}
+
+.info_section .info_box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #104e8b, #ab82bf)
+}
+
+.info_section .info_box::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #104e8b, #ab82bf);
+  filter: blur(30px);
+}
+
+.info_section .info_box span {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  background: rgba(0,0,0,0.4);
+  z-index: 2;
+}
+
+.info_section .info_box span::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+/* Moves text in front of gradient background */
+.info_section .info_box .info_content{
+  position: relative;
+  z-index: 10;
+  padding: 20px 40px;
+}
+
+.info_section .info_box .info_content h2 {
+  font-size: 2em;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.info_section .info_box .info_content p {
+  font-size: 1.1em;
+  color: #ffffff;
+  margin-bottom: 10px;
+  line-height: 1.4em;
+}
+
+.info_section .info_box .info_content a {
+  display: inline-block;
+  font-size: 1.1em;
+  color: #fff;
+  background: linear-gradient(315deg, #002e5c, #6a3186);
+  padding: 12px;
+  text-decoration: none;
+  font-weight: 700;
+}
