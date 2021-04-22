@@ -10,7 +10,10 @@ from platform import system
 import datetime
 import socket
 import nmap
+
 from .osdata import get_op_sys, get_ip, map_net, scan_network, get_vendor
+import pyufw as ufw
+
 
 import json
 
@@ -150,4 +153,50 @@ def portpage(request, ajaxip):
     my_ip = ajaxip
     ports = json.dumps(ports)
     context = {'ports': ports, 'os': system(), 'ip': my_ip }
-    return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)}) 
+    return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)})
+
+
+def splash_page(request):
+    return render(request, 'homepage/splash-page.html')
+
+def tutpage1(request):
+    return render(request, 'tutorial/tutpage1.html')
+
+def tutpage2(request):
+    return render(request, 'tutorial/tutpage2.html')
+
+def tutpage3(request):
+    return render(request, 'tutorial/tutpage3.html')
+
+def tutpage4(request):
+    return render(request, 'tutorial/tutpage4.html')
+
+def tutpage5(request):
+    return render(request, 'tutorial/tutpage5.html')
+
+def ufw_block(request,blocktype,blocktarget):
+
+    if (blocktype == "in") | (blocktype == "out"):
+        ufw.add("deny " + blocktype + " " + blocktarget)
+
+    elif blocktype == "host":
+        ufw.add("deny from " + blocktarget + " to any")
+
+    if ufw.status() == "active":
+        ufw.reload()
+    elif ufw.status() == "inactive":
+        ufw.enable()
+    return HttpResponse("Block Successful");
+
+def ufw_manager(request):
+    ufw_rules = ufw.status()['rules'];
+
+    context = {'rules': ufw_rules}
+
+    return render(request, 'homepage/ufw-manager.html', {'context' : json.dumps(context)})
+
+def ufw_delete_rule(request, rule):
+
+    ufw.delete(rule)
+    return HttpResponse("Delete Successful");
+

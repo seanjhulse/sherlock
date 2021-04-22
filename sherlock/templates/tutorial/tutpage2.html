@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tutorial - Overview</title>
+
+    {% load static %}
+    <!--Example of linking to javascript-->
+    <!-- <script src="{% static 'scripts/script.js' %}" type="text/javascript"></script> -->
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"/>
+    
+    <!--Google Font-->
+    <link rel="preconnect" href="https://fonts.gstatic.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap" rel="stylesheet"/>
+  </head>
+  
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="navbar__container">
+        <!--App Logo-->
+        <a href="/" id="navbar__logo"><img width="75" height="75" src="{% static 'images/SherLOCK - App Logo.png' %}"/>SherLOCK</a
+        >
+
+        <!--Hamburger Button-->
+        <div class="navbar__toggle" id="mobile-menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+
+        <ul class="navbar__menu">
+
+          <!--Example Item-->
+          <li class="navbar__item">
+            <a href="/" class="navbar__links"> Home </a>
+          </li>
+
+        </ul>
+      </div>
+    </nav>
+
+    <div class="info_section">
+      <div style="position: relative; width: 1440px; height: 1950px;" class="info_box">
+          <span></span>
+          <div class="info_content">
+              <h2>SherLOCK - Overview</h2>
+              <p>
+                <br>
+                Our product provides a convenient visual of active network connections to your computer. <br><br>
+                Upon entering the nodemap, you will be greeted with something like the following:
+                <img width="1280" height="720" src="{% static 'images/nodemap-initialview.png' %}"/> <br><br>
+                As the page sits idle, more nodes will begin to populate the screen. <br><br>
+                Below is an example of a more populated view of the nodemap:
+                <img width="1280" height="720" src="{% static 'images/nodemap-populatedview.png' %}"/>
+                <br><br>
+              </p>
+              <a href="/tutpage1">Previous</a>
+              <a href="/tutpage3">Next</a>
+          </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu  -->
+    <script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
+    
+    <!-- Hide Nav Bar on Scroll -->
+    <script>
+      window.onscroll = scrollShowNav;
+      function scrollShowNav() {
+         if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementsByTagName("nav")[0].style.top = "-100px";
+         } else {
+            document.getElementsByTagName("nav")[0].style.top = "0px";
+         }
+      }
+    </script>
+  </body>
+</html>
