@@ -353,6 +353,7 @@ body {
   align-items: center;
   margin: 25px 35px;
   transition: 0.5s;
+}
 
 #urlLoader {
     display: none;
