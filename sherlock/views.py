@@ -186,10 +186,10 @@ def ufw_block(request,blocktype,blocktarget):
         ufw.reload()
     elif ufw.status() == "inactive":
         ufw.enable()
-    return HttpResponse("Block Successful");
+    return HttpResponse("Block Successful")
 
 def ufw_manager(request):
-    ufw_rules = ufw.status()['rules'];
+    ufw_rules = ufw.status()['rules']
 
     context = {'rules': ufw_rules}
 
@@ -198,5 +198,5 @@ def ufw_manager(request):
 def ufw_delete_rule(request, rule):
 
     ufw.delete(rule)
-    return HttpResponse("Delete Successful");
+    return HttpResponse("Delete Successful")
 

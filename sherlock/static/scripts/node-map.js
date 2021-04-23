@@ -604,7 +604,7 @@ function getIcon(os) {
     }
 
     return _osIcon
-
+  }
 function createInspectionDiv(label, source, target, protocol, port){
     var container = document.createElement("div");
     var menuid = label + "inspectionmenu";
@@ -649,5 +649,5 @@ function createInspectionDiv(label, source, target, protocol, port){
 }
 function closeDiv(ele){
     console.log("closing " + ele);
-    getElementById(ele).remove();
-}
+    document.getElementById(ele).remove();
+  }
