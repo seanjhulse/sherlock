@@ -182,9 +182,9 @@ def ufw_block(request,blocktype,blocktarget):
     elif blocktype == "host":
         ufw.add("deny from " + blocktarget + " to any")
 
-    if ufw.status()['status'] == "active":
+    if ufw.status() == "active":
         ufw.reload()
-    elif ufw.status()['status'] == "inactive":
+    elif ufw.status() == "inactive":
         ufw.enable()
     return HttpResponse("Block Successful");
 
