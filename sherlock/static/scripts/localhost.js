@@ -49,8 +49,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Add the node
         _elements.push({
-            data: { id: "other-" + stringifiedIp, } }); // Add the Edge
-           _elements.push({
+            data: {
+                id: "other-" + stringifiedIp,
+            }
+        });
+
+        // Add the Edge
+        _elements.push({
             data: {
                 id: 'edge-' + stringifiedIp,
                 source: "host",
@@ -62,17 +67,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (scan)
         {
             const firstOSMatch = Object.values(scan['vendor'])[0];
-            console.log(typeof firstOSMatch);
-            if(firstOSMatch == "undefined")
-            {
-                firstOSMatch = "Node"
-            }
-            const otherOSMatch = Object.values(scan['hostnames']);
-            if(typeof otherOSMatch !== undefined)
-            {
-               nested = Object.values(otherOSMatch); 
-
-            }
             // Add the styling
             _style.push({
                 selector: `#other-${stringifiedIp}`,
@@ -121,18 +115,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }).run();
 });
 
- // yes, Intel isn't just windows, but Apple devices show "Apple", same for Linux
-export function getIcon(os) {
+
+function getIcon(os) {
     _osIcon = "../../static/images/default-logo.png";
 
     switch (os) {
 
         case "Windows":
-        case "Inter Corporate":
             _osIcon = "../../static/images/windows-10-icon.png";
             break;
         case "Darwin":
-        case "Apple":
             _osIcon = "../../static/images/ios-icon.png";
             break;
         case "Linux":

@@ -4,8 +4,6 @@ from django.utils import timezone
 from sherlock.models import Packet
 from scapy.all import sniff, load_layer
 from dns import resolver,reversename
-import traceback
-import logging
 
 # FLAGS
 FIN = 0x01
@@ -25,14 +23,20 @@ class SocketSniffer:
 
     def __init__(self):
         load_layer('tls')
-        self.packets = collections.deque(maxlen=1000)
+        self.packets = collections.deque(maxlen=100)
 
     def get_packets(self):
-        try:
-            packet = self.packets.popleft()
-            return self.convert_packet(packet)
-        except IndexError as e:
-            return None
+        packets = []
+
+        while True:
+            try:
+                packet = self.packets.popleft()
+                if packet is not None:
+                    packets.append(packet)
+            except IndexError as e:
+                break
+        
+        return packets
 
     def http_header(self, packet):
         http_packet = str(packet)
@@ -42,8 +46,8 @@ class SocketSniffer:
     def get_host(self, ip):
         try:
             data = socket.gethostbyaddr(ip)
-            host = data[0]
-            return str(host)
+            host = repr(data[0])
+            return host
         except Exception:
             # fail gracefully
             return None
@@ -54,44 +58,39 @@ class SocketSniffer:
         ret += "*****************************************************************************************************\n"
         return ret
 
-    def convert_packet(self, packet):
+    def packet_callback(self, packet):
+
         try:
             pkt = Packet()
             packet = packet[0][1]
             
             # IP Address limited to 39 characters
-            # packet.show()
-            if 'IP' in packet:
-                pkt.source_ip_address = packet['IP'].src
-                pkt.source_host_name = self.get_host(packet['IP'].src)
-                pkt.destination_ip_address = packet['IP'].dst
-                pkt.destination_host_name = self.get_host(packet['IP'].dst)
+            pkt.source_ip_address = packet.src
+            pkt.destination_ip_address = packet.dst
+            
+            pkt.source_host_name = self.get_host(pkt.source_ip_address)
+            pkt.destination_host_name = self.get_host(pkt.destination_ip_address)
 
-                # Time to Live
-                pkt.ttl = packet['IP'].ttl
+            # Time to Live
+            pkt.ttl = packet.ttl
 
-                # Protocol
-                protocol = packet['IP'].proto
-                if protocol == TCP:
-                    pkt.protocol = "TCP"
-                if protocol == UDP:
-                    pkt.protocol = "UDP"
+            # Protocol
+            protocol = packet.proto
+            if protocol == TCP:
+                pkt.protocol = "TCP"
+            if protocol == UDP:
+                pkt.protocol = "UDP"
 
             # Source and Destination Port limited to 5 characters
-            if 'TCP' in packet:
-                pkt.source_port = packet['TCP'].sport
-                pkt.destination_port = packet['TCP'].dport
-
-            if 'UDP' in packet:
-                pkt.source_port = packet['UDP'].sport
-                pkt.destination_port = packet['UDP'].dport
+            pkt.source_port = packet.sport
+            pkt.destination_port = packet.dport
 
             # TCP Flags
             if 'TCP' in packet:
                 F = packet['TCP'].flags    # this should give you an integer
-                if F == 'FA' or F == 'F':
+                if F & FIN:
                     pkt.flags = "FIN"
-                if F == 'S' or F == 'SA':
+                if F & SYN:
                     pkt.flags = "SYN"
 
             # Payload is just an large TextField representing the body of a message
@@ -100,25 +99,18 @@ class SocketSniffer:
 
                 # Attempt to parse the load and - if successful - replace payload with it
                 parsed_data = self.http_header(packet)
-                if str(pkt.source_port) == '80':
+                if 'Location' in parsed_data:
                     pkt.payload = parsed_data
             else:
                 pkt.payload = ""
 
             # Save the timestamp
             pkt.pub_date = timezone.now()
-            
-            return pkt
-        except Exception as e:
-            logging.error(traceback.format_exc())
-            return None 
-            
-    def packet_callback(self, packet):
-        try:
-            self.packets.append(packet)
+
+            # Should store when this data was published to the database
+            self.packets.append(pkt)
         except:
-            logging.error(traceback.format_exc())
             pass
 
     def sniff_packets(self):
-        sniff(prn=self.packet_callback, filter="tcp || udp", store=False)
+        sniff(prn=self.packet_callback, store=0)

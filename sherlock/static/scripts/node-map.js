@@ -1,27 +1,17 @@
+
+
 // Setup global variables
 var nodeMap;
 const defaultLineColor = "#444";
+const nodeCache = []
+var radius = 500;
+var theta = 0;
 var graphFit = false;
 var trafficLineColor = "red";
 var unique = [];
-var MY_SYSTEM;
 var trafficColors = ['green', 'blue', 'yellow', 'orange','purple','red']
 const COLOR_COUNT = trafficColors.length-1;
 
-
-const layoutOptions = {
-  autounselectify: true,
-  avoidOverlap: true,
-  animate: true,
-  maxSimulationTime: 4000,
-  refresh: 1,
-  nodeDimensionsIncludeLabels: true,
-  boxSelectionEnabled: false,
-  randomize: false,
-  nodeSpacing: function( node ){ return 50; },
-};
-
-var MY_IP = '10.0.2.15';
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -33,9 +23,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const data = JSON.parse(dataNode.dataset.context);
 
-    MY_IP = data.ip
+    const MY_IP = data.ip
     console.log("host ip address is: " + MY_IP);
-    MY_SYSTEM = data.os;
 
 
   // Clear Graph Button
@@ -44,14 +33,16 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('/delete-all')
     .then(res => {
       nodeMap.elements().remove();
-      createLocalHost(MY_IP);
     })
   })
 
   // Start Cytoscape
   nodeMap = window.cy = cytoscape({
     container: document.getElementById('node-map'),
-    layout: { name: 'cola', ...layoutOptions },
+    autounselectify: true,
+    maxZoom: 1,
+    boxSelectionEnabled: false,
+    layout: { name: 'cola' },
     style: [
       {
         selector: 'node',
@@ -252,18 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Everytime a websocket sends a message...
     socket.onmessage = function (e) {
       const message = JSON.parse(e.data);
-      handleMessage(message);
-
-      if (graphFit)
-      {
-        const map = nodeMap.layout({name: 'cola', ...layoutOptions, fit: false});
-        map.run();
-      } else {
-        const map = nodeMap.layout({name: 'cola', ...layoutOptions, fit: true});
-        map.run();
-        graphFit = true;
-      }
-
+      handleMessage(message)
     };
     // When the socket closes...
     socket.onclose = function (e) {
@@ -286,18 +266,6 @@ function createEdges(packet) {
   }
 }
 
-function createEdge(source, target, port) {
-  return {
-    group: 'edges',
-    data: {
-      id: source + '->' + target,
-      source: source,
-      target: target,
-      label: port,
-    }
-  }
-}
-
 function handleMessage(message)
 {
   const data = JSON.parse(message.message);
@@ -307,37 +275,28 @@ function handleMessage(message)
   }
 }
 
-function createNode(id) {
-  var NODE_SYSTEM = 'default';
-  //$.ajax({
-  //    type: 'GET',
-  //    url: '/network-os/'.concat(id),
-  //    data: {ip: id}
-  //}).done(function(o){
-  //  NODE_SYSTEM = o;
-  //  console.log('node os: ' + NODE_SYSTEM);
-  //});
+function createNode(id, hostName) {
+
+  if (!nodeCache.includes(id)) {
+    // Increment theta
+    theta = theta + 5;
+    if (theta > 360) {
+      theta = 0;
+      radius = radius * 1.25;
+    }
+  }
   return {
     group: 'nodes',
     data: {
       id: id,
-      label: id
+      label: hostName ? hostName : id
     },
     position: {
-      x: 0,
-      y: 0,
-    },
-    style: {
-          shape: 'roundrectangle',
-          width:65,
-          height: 65, 
-          'background-image': '../../static/images/default-icon.png',
-          //'background-image' : getIcon(NODE_SYSTEM),
-          'background-color': '#F9F9F9'
+      x: radius * Math.cos(theta),
+      y: radius * Math.sin(theta)
     }
   }
 }
-
 function createLocalHost(id) {
   return {
     group: 'nodes',
@@ -345,22 +304,22 @@ function createLocalHost(id) {
       id: id,
       label: 'This Computer'
     },
-    style: {
-        shape: 'roundrectangle',
-         width: 100,
-         height: 100,
-        'background-image': getIcon(MY_SYSTEM),
-        'background-color': '#F9F9F9'
-    }
+    position: {
+      x: 0,
+      y: 0
+    },
   }
 }
 
-function createEdgeId(packet) {
+
+function createEdgeId(packet)
+{
   return packet.source_ip_address + "->" + packet.destination_ip_address;
 }
 
 // Initialize the graph based on previous data in the database
-function initGraph() {
+function initGraph()
+{
   console.log("Initializing the node map...")
   // This fetches nodes within 1-minute of our current time (ie. all nodes saved 1 minute ago)
   fetch('/nodes/5', {
@@ -375,13 +334,13 @@ function initGraph() {
   });
 }
 
-function addPacket(packet) {
+function addPacket(packet)
+{
   const closeConnectionFlag = packet.flags === "FIN";
   const sourceIP = packet.source_ip_address;
   const destinationIP = packet.destination_ip_address;
 
   // If the FIN flag has been set, we should remove the node (the connection is closed)
-  console.log(packet.flags);
   if (closeConnectionFlag) {
     if (destinationIP != "10.0.2.15" && destinationIP != "127.0.0.1") {
       removeNode(packet, packet.destination_ip_address)
@@ -391,96 +350,43 @@ function addPacket(packet) {
     }
   } else {
 
-    // Create the source and destination nodes
     const sourceNode = nodeMap.$(`[id="${sourceIP}"]`);
     if (sourceNode.length <= 0) {
-      nodeMap.add(createNode(sourceIP));
+      nodeMap.add(createNode(sourceIP, packet.source_host_name));
     }
+
     const destinationNode = nodeMap.$(`[id="${destinationIP}"]`);
     if (destinationNode.length <= 0) {
-      nodeMap.add(createNode(destinationIP));
+      nodeMap.add(createNode(destinationIP, packet.destination_host_name));
     }
-
-    const port = packet.source_port ? packet.source_port : packet.destination_port;
-
-    // Create the intermediary nodes (if they exist)
-    const sourceHostName = domainFromUrl(packet.source_host_name);
-    const destinationHostName = domainFromUrl(packet.destination_host_name);
-   
-    const sourceHostNode = nodeMap.$(`[id="${sourceHostName}"]`);
-    const destinationHostNode = nodeMap.$(`[id="${destinationHostName}"]`);
-    if (sourceHostName !== undefined && sourceHostName !== 'undefined' && sourceHostNode.length <= 0) {
-      nodeMap.add(createNode(sourceHostName));
-      
-      // Edge from source -> intermediary
-      var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + sourceHostName}"]`)
-      if (edgeNode.length <= 0)
-      {
-        edges = createEdge(packet.source_ip_address, sourceHostName, port);
-        nodeMap.add(edges);
-      }
-
-      // Edge from intermediary -> end
-      edgeNode = nodeMap.$(`[id="${sourceHostName + '->' + packet.destination_ip_address}"]`)
-      if (edgeNode.length <= 0)
-      {
-        edges = createEdge(sourceHostName, packet.destination_ip_address, port);
-        nodeMap.add(edges);
-      }
-    } else if (destinationHostName !== undefined && destinationHostName !== 'undefined' && destinationHostNode.length <= 0) {
-      nodeMap.add(createNode(destinationHostName));
-      
-      // Edge from source -> intermediary
-      var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + destinationHostName}"]`)
-      if (edgeNode.length <= 0)
-      {
-        edges = createEdge(packet.source_ip_address, destinationHostName, port);
-        nodeMap.add(edges);
-      }
-
-      // Edge from intermediary -> end
-      edgeNode = nodeMap.$(`[id="${destinationHostName + '->' + packet.destination_ip_address}"]`)
-      if (edgeNode.length <= 0)
-      {
-        edges = createEdge(destinationHostName, packet.destination_ip_address, port);
-        nodeMap.add(edges);
-      }
-    } else {
-      // Edge from source -> intermediary
-      var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + packet.destination_ip_address}"]`)
-      if (edgeNode.length <= 0)
-      {
-        edges = createEdge(packet.source_ip_address, packet.destination_ip_address, port);
-        nodeMap.add(edges);
-      }
-
-      // Edge from intermediary -> end
-      // edgeNode = nodeMap.$(`[id="${uniqueNodeName + '->' + packet.destination_ip_address}"]`)
-      // if (edgeNode.length <= 0)
-      // {
-      //   edges = createEdge(uniqueNodeName, packet.destination_ip_address, port);
-      //   nodeMap.add(edges);
-      // }
-    }
-
-    colorEdge(packet.source_ip_address + '->' + sourceHostName);
-    colorEdge(sourceHostName + '->' + packet.destination_ip_address);
-    colorEdge(packet.source_ip_address + '->' + destinationHostName);
-    colorEdge(destinationHostName + '->' + packet.destination_ip_address);
-
-    colorEdge(packet.source_ip_address, packet.destination_ip_address);
-    // colorEdge(uniqueNodeName, packet.destination_ip_address);
-    // colorEdge(packet.destination_ip_address, uniqueNodeName);
-    // colorEdge(uniqueNodeName, packet.source_ip_address);
-  }
-}
-
-function colorEdge(source, target) {
-  var edge = nodeMap.getElementById(source + '->' + target);
-  if (edge.length > 0) {
-    trafficLineColor = resolveProtocol(packet.protocol, unique, trafficColors);
     
+    const edgeId = createEdgeId(packet);
+    const edgeNode = nodeMap.$(`[id="${edgeId}"]`)
+    if (edgeNode.length <= 0)
+    {
+      edges = createEdges(packet);
+      nodeMap.add(edges);
+    }
+
+    nodeCache.push(sourceIP);
+    nodeCache.push(destinationIP);
+  }
+    
+
+  if (!graphFit)
+  {
+    nodeMap.fit();
+    graphFit = true;
+  }
+  
+  edgeId = createEdgeId(packet);
+  if (edgeId != null)
+  {
+
     uniqueProtocol(packet.protocol,unique,trafficColors); //needs to be before edge creation /animation to update color list
+    var edge = nodeMap.getElementById(edgeId);
+
+    trafficLineColor = resolveProtocol(packet.protocol, unique, trafficColors);
     edge.animate({
       style: {
         lineColor: trafficLineColor
@@ -497,79 +403,44 @@ function colorEdge(source, target) {
   }
 }
 
-function removeNode(packet, id) {
-  const source_nodes = nodeMap.$(`[id*="${id}"]`);
-  console.log("Removing nodes:", source_nodes)
-  nodeMap.remove(source_nodes);
+function removeNode(packet, id)
+{
+  const node = nodeMap.$(`[id="${id}"]`);
+  const nodeEdgeId = createEdgeId(packet);
+  const nodeEdge = nodeMap.$(`[id="${nodeEdgeId}"]`);
+  
+  console.log("Removing node:", id)
 
-  var alt_nodes = nodeMap.$(`[id*="${packet.sourceHostName}"]`);
-  console.log("Removing nodes:", alt_nodes)
-  nodeMap.remove(alt_nodes);
+  nodeMap.remove(node);
+  nodeMap.remove(nodeEdge);
 
-  alt_nodes = nodeMap.$(`[id*="${packet.destinationHostName}"]`);
-  console.log("Removing nodes:", alt_nodes)
-  nodeMap.remove(alt_nodes);
+  const index = nodeCache.indexOf(id);
+  if (index > -1) {
+    nodeCache.splice(index, 1);
+  }
 }
-
 function resolveProtocol(protocolCode, protocolArray, colorArray){
-  var output;
-  let colorIndex = protocolArray.indexOf(protocolCode);
-  if (colorIndex>COLOR_COUNT){
-      colorIndex = COLOR_COUNT;
-  }
+    var output;
+    let colorIndex = protocolArray.indexOf(protocolCode);
+    if (colorIndex>COLOR_COUNT){
+        colorIndex = COLOR_COUNT;
+    }
 
-  output = colorArray[colorIndex];
+    output = colorArray[colorIndex];
 
-  /*
-  switch (protocolCode){
-      case "TCP":
-          output = "green"
-          break;
-      case "UDP":
-          output = "blue";
-          break;
-      case "FTP":
-          output = "yellow";
-          break;
-      default:
-          output = "red";
-          break;
-  }*/
-  return output;
+    return output;
 }
-
-
-// https://stackoverflow.com/a/34818545
-function domainFromUrl(url) {
-  if (url === undefined || url === "undefined" || url === null) {
-    return undefined;
-  }
-  var result
-  var match
-  if (match = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im)) {
-      result = match[1]
-      while (match = result.match(/^[^\.]+\.(.+\..+)$/)) {
-        result = match[1]
-        
-      }
-  }
-  if (result.includes('.')) {
-    return result;
-  }
-
-  return undefined;
-}
-
 //log unique protocol values
-function uniqueProtocol(protocolCode, uniqueArray,colorArray) {
+function uniqueProtocol(protocolCode, uniqueArray,colorArray){
+
     if (uniqueArray.indexOf(protocolCode)==-1){
         uniqueArray.push(protocolCode);
         console.log(uniqueArray);
         updateLegend(protocolCode,uniqueArray,colorArray)
     }
 }
+function updateLegend(protocolCode, protocolArray, colorArray){
 
-function updateLegend(protocolCode, protocolArray, colorArray) {
     var node = document.createElement('p');
     node.appendChild(document.createTextNode(protocolCode));
     node.style.cssText = "color:" + colorArray[protocolArray.indexOf(protocolCode)];
@@ -578,40 +449,13 @@ function updateLegend(protocolCode, protocolArray, colorArray) {
 
 }
 
-
-function getIcon(os) {
-    _osIcon = "../../static/images/default-logo.png";
-
-    switch (os) {
-
-        case "Windows":
-            _osIcon = "../../static/images/windows-10-icon.png";
-            break;
-        case "Darwin":
-            _osIcon = "../../static/images/ios-icon.png";
-            break;
-        case "Linux":
-            _osIcon = "../../static/images/linux-icon.png";
-            break;
-        case "Android":
-            _osIcon = "../../static/images/android-icon.png";
-            break;
-        case "Chrome OS":
-            _osIcon = "../../static/images/chrome-os-icon.png";
-            break;
-        default:
-            _osIcon = "../../static/images/default-icon.png";
-    }
-
-    return _osIcon
-
 function createInspectionDiv(label, source, target, protocol, port){
     var container = document.createElement("div");
     var menuid = label + "inspectionmenu";
     container.className = "draggable widget";
     container.id = menuid;
-	  container.style.top = '500px';
-	  container.style.left = '1000px';
+	container.style.top = '500px';
+	container.style.left = '1000px';
 
     var header = document.createElement("div");
     header.id = label + "inspectionmenuheader";

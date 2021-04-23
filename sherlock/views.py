@@ -10,10 +10,8 @@ from platform import system
 import datetime
 import socket
 import nmap
-
-from .osdata import get_op_sys, get_ip, map_net, scan_network, get_vendor
+from .osdata import get_op_sys, get_ip, map_net, scan_network
 import pyufw as ufw
-
 
 import json
 
@@ -23,7 +21,7 @@ def index(request):
 
 def node_map(request):
     my_ip = get_ip()
-    context = {'ip': my_ip, 'os': system()}
+    context = {'ip': my_ip}
     return render(request, 'homepage/node-map.html', {'context': json.dumps(context)})
 
 def delete_all(request):
@@ -66,16 +64,8 @@ def network_traffic(request, port):
     return render(request, 'examples/websockets/index.html')
 
 
-def network_operating_systems(request, ip):
-    ''' I tried getting the following working but there were issues, namely:
-        1. The os scan process using nmap or nmap3 slowed down the node map considerably
-        2. Inaccurate results would come back for mostly every other node that wasn't on a local network
-    '''
-    # 
-    # vendor = get_vendor(ip)
-    vendor = 'default'
-    return HttpResponse(vendor)
-    # return HttpResponse('The operating systems on this network are: %s' % (get_op_sys(map_net())))
+def network_operating_systems(request):
+    return HttpResponse('The operating systems on this network are: %s' % (get_op_sys(map_net())))
 
 def host_scan_all(request, ipaddress):
 	""" Scan an ipaddress for other hosts """
@@ -129,7 +119,7 @@ def web_sockets_example(request):
     return render(request, 'examples/websockets/index.html')
     
 def localpage(request, ajaxip):
-    print('Scanning for other hosts...')
+
     ports = []
     ports = json.dumps(ports)
     cidr = ajaxip + "/24"
@@ -137,8 +127,6 @@ def localpage(request, ajaxip):
     scan_results = nm.scan(hosts=cidr, arguments='-sP')
     scan = json.dumps(scan_results) 
     print('finished scanning for other hosts')
-
-    print(scan)
     my_ip = ajaxip
     
     latest_scan = Scan.objects.last()
@@ -154,25 +142,6 @@ def portpage(request, ajaxip):
     ports = json.dumps(ports)
     context = {'ports': ports, 'os': system(), 'ip': my_ip }
     return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)})
-
-
-def splash_page(request):
-    return render(request, 'homepage/splash-page.html')
-
-def tutpage1(request):
-    return render(request, 'tutorial/tutpage1.html')
-
-def tutpage2(request):
-    return render(request, 'tutorial/tutpage2.html')
-
-def tutpage3(request):
-    return render(request, 'tutorial/tutpage3.html')
-
-def tutpage4(request):
-    return render(request, 'tutorial/tutpage4.html')
-
-def tutpage5(request):
-    return render(request, 'tutorial/tutpage5.html')
 
 def ufw_block(request,blocktype,blocktarget):
 
@@ -199,4 +168,3 @@ def ufw_delete_rule(request, rule):
 
     ufw.delete(rule)
     return HttpResponse("Delete Successful");
-

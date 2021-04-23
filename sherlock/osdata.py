@@ -78,11 +78,3 @@ def get_ip():
 def scan_network(ip):
     nm = nmap.PortScanner()
     return nm.scan(hosts=ip, arguments='-O -T5 -n --max-parallelism=255 --min-parallelism=100')
-
-def get_vendor(ip):
-    nmap = nmap3.Nmap()
-    os_results = nmap.nmap_os_detection(ip)
-    try:
-        return os_results[ip]['osmatch'][0]['osclass']['osfamily']
-    except KeyError:
-        return 'default' 
