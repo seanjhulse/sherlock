@@ -12,13 +12,18 @@ This web application is ideal for anyone who seeks to manage the security of the
 
 To install the application, please adhere to the following steps:
 
-### 0. Make sure you're runnning Linux (Note: SherLOCK was primarily tested with Debian-based distributions), and are using python 3.x+.
-### 1. Make sure you're using a modern, compatible browser (Note: Tested for use in Firefox, Chrome, and Edge). 
-### 2. Run the following to take care of dependencies
+### 0. Make sure you're runnning Linux (Note: SherLOCK was primarily tested with Debian-based distributions).
+### 1. Make sure you're running python 3.6+. 
+### 2. Make sure you're using a modern, compatible browser (Note: Tested for use in Firefox, Chrome, and Edge). 
+### 3. Clone the repository
+```
+git clone https://github.com/seanjhulse/sherlock.git
+```
+### 3. Run the following to take care of dependencies
 ```
 $ pip install -r requirements.txt
 ```
-### 3. To start the application
+### 4. To start the application
 
 ```
 $ sudo python3 manage.py runserver
