@@ -12,8 +12,8 @@ This web application is ideal for anyone who seeks to manage the security of the
 
 To install the application, please adhere to the following steps:
 
-
-### 1. Make sure you're using a compatible browser (Edge, Firefox, Chrome, etc.)
+### 0. Make sure you're runnning Linux (Note: SherLOCK was primarily tested with Debian-based distributions), and are using python 3.x+.
+### 1. Make sure you're using a modern, compatible browser (Note: Tested for use in Firefox, Chrome, and Edge). 
 ### 2. Run the following to take care of dependencies
 ```
 $ pip install -r requirements.txt
