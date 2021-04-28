@@ -182,13 +182,12 @@ def ufw_block(request,blocktype,blocktarget):
     elif blocktype == "host":
         ufw.add("deny from " + blocktarget + " to any")
 
-    if ufw.status() == "active":
-        ufw.reload()
-    elif ufw.status() == "inactive":
-        ufw.enable()
+    check_ufw()
+
     return HttpResponse("Block Successful")
 
 def ufw_manager(request):
+    check_ufw()
     ufw_rules = ufw.status()['rules']
 
     context = {'rules': ufw_rules}
@@ -200,3 +199,9 @@ def ufw_delete_rule(request, rule):
     ufw.delete(rule)
     return HttpResponse("Delete Successful")
 
+
+def check_ufw ():
+    if ufw.status()['status'] == "active":
+        ufw.reload()
+    elif ufw.status()['status'] == "inactive":
+        ufw.enable()
