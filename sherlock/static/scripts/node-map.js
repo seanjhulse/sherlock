@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 });
 
-
+/*
 function createEdges(packet) {
   return {
     group: 'edges',
@@ -285,8 +285,8 @@ function createEdges(packet) {
     }
   }
 }
-
-function createEdge(source, target, port) {
+*/
+function createEdge(source, target, port, protocol) {
   return {
     group: 'edges',
     data: {
@@ -294,6 +294,7 @@ function createEdge(source, target, port) {
       source: source,
       target: target,
       label: port,
+      protocol: protocol,
     }
   }
 }
@@ -379,6 +380,7 @@ function addPacket(packet) {
   const closeConnectionFlag = packet.flags === "FIN";
   const sourceIP = packet.source_ip_address;
   const destinationIP = packet.destination_ip_address;
+  const protocol = packet.protocol;
 
   // If the FIN flag has been set, we should remove the node (the connection is closed)
   console.log(packet.flags);
@@ -416,7 +418,7 @@ function addPacket(packet) {
       var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + sourceHostName}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(packet.source_ip_address, sourceHostName, port);
+        edges = createEdge(packet.source_ip_address, sourceHostName, port, protocol);
         nodeMap.add(edges);
       }
 
@@ -424,7 +426,7 @@ function addPacket(packet) {
       edgeNode = nodeMap.$(`[id="${sourceHostName + '->' + packet.destination_ip_address}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(sourceHostName, packet.destination_ip_address, port);
+        edges = createEdge(sourceHostName, packet.destination_ip_address, port, protocol);
         nodeMap.add(edges);
       }
     } else if (destinationHostName !== undefined && destinationHostName !== 'undefined' && destinationHostNode.length <= 0) {
@@ -434,7 +436,7 @@ function addPacket(packet) {
       var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + destinationHostName}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(packet.source_ip_address, destinationHostName, port);
+        edges = createEdge(packet.source_ip_address, destinationHostName, port, protocol);
         nodeMap.add(edges);
       }
 
@@ -442,7 +444,7 @@ function addPacket(packet) {
       edgeNode = nodeMap.$(`[id="${destinationHostName + '->' + packet.destination_ip_address}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(destinationHostName, packet.destination_ip_address, port);
+        edges = createEdge(destinationHostName, packet.destination_ip_address, port, protocol);
         nodeMap.add(edges);
       }
     } else {
@@ -450,7 +452,7 @@ function addPacket(packet) {
       var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + packet.destination_ip_address}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(packet.source_ip_address, packet.destination_ip_address, port);
+        edges = createEdge(packet.source_ip_address, packet.destination_ip_address, port, protocol);
         nodeMap.add(edges);
       }
 
@@ -520,21 +522,6 @@ function resolveProtocol(protocolCode, protocolArray, colorArray){
 
   output = colorArray[colorIndex];
 
-  /*
-  switch (protocolCode){
-      case "TCP":
-          output = "green"
-          break;
-      case "UDP":
-          output = "blue";
-          break;
-      case "FTP":
-          output = "yellow";
-          break;
-      default:
-          output = "red";
-          break;
-  }*/
   return output;
 }
 
@@ -558,24 +545,6 @@ function domainFromUrl(url) {
   }
 
   return undefined;
-}
-
-//log unique protocol values
-function uniqueProtocol(protocolCode, uniqueArray,colorArray) {
-    if (uniqueArray.indexOf(protocolCode)==-1){
-        uniqueArray.push(protocolCode);
-        console.log(uniqueArray);
-        updateLegend(protocolCode,uniqueArray,colorArray)
-    }
-}
-
-function updateLegend(protocolCode, protocolArray, colorArray) {
-    var node = document.createElement('p');
-    node.appendChild(document.createTextNode(protocolCode));
-    node.style.cssText = "color:" + colorArray[protocolArray.indexOf(protocolCode)];
-    var element = document.getElementById('legend');
-    element.appendChild(node);
-
 }
 
 
@@ -604,50 +573,5 @@ function getIcon(os) {
     }
 
     return _osIcon
-
-function createInspectionDiv(label, source, target, protocol, port){
-    var container = document.createElement("div");
-    var menuid = label + "inspectionmenu";
-    container.className = "draggable widget";
-    container.id = menuid;
-	  container.style.top = '500px';
-	  container.style.left = '1000px';
-
-    var header = document.createElement("div");
-    header.id = label + "inspectionmenuheader";
-    header.className = "headerbar";
-    header.innerHTML = protocol + " on " + port;
-
-    var closeButton = document.createElement("button");
-    closeButton.className = 'closeButton';
-    closeButton.innerHTML = "X";
-    closeButton.addEventListener("click", function() {
-        this.parentElement.remove()
-    });
-
-    container.appendChild(header);
-    container.appendChild(closeButton);
-
-    pSourceIP = document.createElement('p');
-    pSourceIP.innerHTML = "Source IP: " + source;
-    pSourceIP.style.textAlign = "left";
-    container.appendChild(pSourceIP);
-
-    pTargetIP = document.createElement('p');
-    pTargetIP.innerHTML = "Destination IP: " + target;
-    pTargetIP.style.textAlign = "left";
-    container.appendChild(pTargetIP);
-
-
-    document.body.appendChild(container);
-
-
-    for (i = 0; i<draggableElements.length; i++){
-        dragElement(draggableElements[i]);
-    }
-
 }
-function closeDiv(ele){
-    console.log("closing " + ele);
-    getElementById(ele).remove();
-}
+
