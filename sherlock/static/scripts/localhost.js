@@ -123,29 +123,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
  // yes, Intel isn't just windows, but Apple devices show "Apple", same for Linux
 export function getIcon(os) {
-    _osIcon = "../../static/images/default-logo.png";
+    _osIcon = "../../static/images/newdefaulticon.png";
 
     switch (os) {
 
         case "Windows":
         case "Inter Corporate":
-            _osIcon = "../../static/images/windows-10-icon.png";
+            _osIcon = "../../static/images/newwindowsicon.png";
             break;
         case "Darwin":
         case "Apple":
-            _osIcon = "../../static/images/ios-icon.png";
+            _osIcon = "../../static/images/newmacicon.png";
             break;
         case "Linux":
-            _osIcon = "../../static/images/linux-icon.png";
+            _osIcon = "../../static/images/newlinuxicon.png";
             break;
         case "Android":
-            _osIcon = "../../static/images/android-icon.png";
+            _osIcon = "../../static/images/newandroidicon.png";
             break;
         case "Chrome OS":
-            _osIcon = "../../static/images/chrome-os-icon.png";
+            _osIcon = "../../static/images/newchromeicon.png";
             break;
         default:
-            _osIcon = "../../static/images/default-icon.png";
+            _osIcon = "../../static/images/newdefaulticon.png";
     }
 
     return _osIcon
