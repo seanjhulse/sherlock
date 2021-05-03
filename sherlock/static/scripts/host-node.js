@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
     //create and append style objects under list 'style'
 
     // var _osIcon;
-    var _portIcon = "../../static/images/port-icon.png";
+    var _portIcon = "../../static/images/newporticon.png";
 
     // switch (_hostOS) {
 
@@ -144,27 +144,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 function getIcon(os) {
-    _osIcon = "../../static/images/default-logo.png";
+    _osIcon = "../../static/images/newdefaulticon.png";
 
     switch (os) {
 
         case "Windows":
-            _osIcon = "../../static/images/windows-10-icon.png";
+            _osIcon = "../../static/images/newwindowsicon.png";
             break;
         case "Darwin":
-            _osIcon = "../../static/images/ios-icon.png";
+            _osIcon = "../../static/images/newmacicon.png";
             break;
         case "Linux":
-            _osIcon = "../../static/images/linux-icon.png";
+            _osIcon = "../../static/images/newlinuxicon.png";
             break;
         case "Android":
-            _osIcon = "../../static/images/android-icon.png";
+            _osIcon = "../../static/images/newandroidicon.png";
             break;
         case "Chrome OS":
-            _osIcon = "../../static/images/chrome-os-icon.png";
+            _osIcon = "../../static/images/newchromeicon.png";
             break;
         default:
-            _osIcon = "../../static/images/default-icon.png";
+            _osIcon = "../../static/images/newdefaulticon.png";
     }
 
     return _osIcon
