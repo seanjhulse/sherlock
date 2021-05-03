@@ -26,11 +26,23 @@ function checkCookie() {
 
     // If cookie exists
     if (user != "") {
-        // Change 'Get Started' button function
-        alert("Welcome again " + user);
+        alert("Welcome back");
+        // "Get Started" directs to node map
+        var button = document.querySelector("main__btn");
+        button.getAttribute("href");
+        button.setAttribute("href", "/node-map");
     }
     // Else generate new cookie
     else {
-        setCookie("username", user, 30);
+        alert("New here? Take the tutorial!");
+        // "Get Started" directs to tutorial page
+        var button = document.querySelector("main__btn");
+        button.getAttribute("href");
+        button.setAttribute("href", "/splash-page");
     }
+}
+
+function tutorialCompleted() {
+    user="Completed SherLOCK Tutorial";
+    setCookie("username", user, 30);
 }
