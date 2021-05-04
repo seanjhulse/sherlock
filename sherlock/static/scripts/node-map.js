@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function () {
           let textArea = document.createElement('textarea')
           // ipaddr = nodeMap.$(`[id="${packet.source_ip_address}"]`) 
           let ipaddr = ele.data('id') 
-          console.log(typeof ipaddr)
           textArea.value = ipaddr 
           textArea.style.top="0";
           textArea.style.left = "0";
@@ -335,6 +334,7 @@ function createNode(id) {
           'background-image': '../../static/images/newdefaulticon.png',
           //'background-image' : getIcon(NODE_SYSTEM),
           'background-color': '#F9F9F9'
+          
     }
   }
 }
@@ -351,7 +351,7 @@ function createLocalHost(id) {
          width: 100,
          height: 100,
         'background-image': getIcon(MY_SYSTEM),
-        'background-color': '#F9F9F9'
+        'background-color': '#F9F9F9',
     }
   }
 }
@@ -402,8 +402,6 @@ function addPacket(packet) {
     if (destinationNode.length <= 0) {
       nodeMap.add(createNode(destinationIP));
     }
-    console.log("line 403 des: ".concat(destinationNode))
-
     const port = packet.source_port ? packet.source_port : packet.destination_port;
 
     // Create the intermediary nodes (if they exist)
@@ -411,10 +409,11 @@ function addPacket(packet) {
     const destinationHostName = domainFromUrl(packet.destination_host_name);
    
     if(port == "443"){
-        colorNode(destinationIP, 'green')
+
+        colorNode(sourceNode, 'green')
     }
     else if(port == "80"){
-      colorNode(destinationIP, 'red')
+      colorNode(sourceNode, 'red')
     }
     const sourceHostNode = nodeMap.$(`[id="${sourceHostName}"]`);
     const destinationHostNode = nodeMap.$(`[id="${destinationHostName}"]`);
@@ -484,16 +483,15 @@ function addPacket(packet) {
   }
 }
 
-function colorNode(id, color)
+function colorNode(selectedNode, color)
 {
-
-    //const sourceNode = nodeMap.$(`[id="${sourceIP}"]`);
-  console.log('port is ' + color)
-  console.log('id: ' + id)
-  destNode = nodeMap.$(`[id="${id}"]`)
-  console.log('node info: '.concat(destNode))       
+  console.log(selectedNode)
+  selectedNode.style('width', 80);
+  selectedNode.style('height', 80);
+  selectedNode.style('background-color', color)
 
 }
+
 
 function colorEdge(source, target) {
   var edge = nodeMap.getElementById(source + '->' + target);
