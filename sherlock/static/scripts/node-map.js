@@ -400,6 +400,7 @@ function addPacket(packet) {
     if (destinationNode.length <= 0) {
       nodeMap.add(createNode(destinationIP));
     }
+    console.log("line 403 des: ".concat(destinationNode))
 
     const port = packet.source_port ? packet.source_port : packet.destination_port;
 
@@ -407,6 +408,12 @@ function addPacket(packet) {
     const sourceHostName = domainFromUrl(packet.source_host_name);
     const destinationHostName = domainFromUrl(packet.destination_host_name);
    
+    if(port == "443"){
+        colorNode(destinationIP, 'green')
+    }
+    else if(port == "80"){
+      colorNode(destinationIP, 'red')
+    }
     const sourceHostNode = nodeMap.$(`[id="${sourceHostName}"]`);
     const destinationHostNode = nodeMap.$(`[id="${destinationHostName}"]`);
     if (sourceHostName !== undefined && sourceHostName !== 'undefined' && sourceHostNode.length <= 0) {
@@ -473,6 +480,17 @@ function addPacket(packet) {
     // colorEdge(packet.destination_ip_address, uniqueNodeName);
     // colorEdge(uniqueNodeName, packet.source_ip_address);
   }
+}
+
+function colorNode(id, color)
+{
+
+    //const sourceNode = nodeMap.$(`[id="${sourceIP}"]`);
+  console.log('port is ' + color)
+  console.log('id: ' + id)
+  destNode = nodeMap.$(`[id="${id}"]`)
+  console.log('node info: '.concat(destNode))       
+
 }
 
 function colorEdge(source, target) {
@@ -604,6 +622,7 @@ function getIcon(os) {
     }
 
     return _osIcon
+}  
 
 function createInspectionDiv(label, source, target, protocol, port){
     var container = document.createElement("div");
