@@ -26,19 +26,19 @@ function checkCookie() {
 
     // If cookie exists
     if (user != "") {
-        alert("Welcome back");
+        // alert("Welcome back");
         // "Get Started" directs to node map
-        var button = document.querySelector("main__btn");
-        button.getAttribute("href");
-        button.setAttribute("href", "/node-map");
+        var link = document.getElementById("get-started");
+        link.setAttribute("href", "/node-map");
+        console.log(link)
+
+        return false;
     }
-    // Else generate new cookie
+    // Else generate Take the Tutorial
     else {
-        alert("New here? Take the tutorial!");
+        // alert("New here? Take the tutorial!");
         // "Get Started" directs to tutorial page
-        var button = document.querySelector("main__btn");
-        button.getAttribute("href");
-        button.setAttribute("href", "/splash-page");
+        // Does nothing since the button is set to initiate the splash-page
     }
 }
 
