@@ -156,7 +156,7 @@ def portpage(request, ajaxip):
     return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)})
 
 
-def splash_page(request):
+def tutorial_begin(request):
     return render(request, 'homepage/splash-page.html')
 
 def tutpage1(request):

@@ -22,7 +22,7 @@ function getCookie(cname) {
 }
 
 function checkCookie() {
-    var user=getCookie("username");
+    var user=getCookie("visited");
 
     // If cookie exists
     if (user != "") {
@@ -44,5 +44,5 @@ function checkCookie() {
 
 function tutorialCompleted() {
     user="Completed SherLOCK Tutorial";
-    setCookie("username", user, 30);
+    setCookie("visited", user, 30);
 }
