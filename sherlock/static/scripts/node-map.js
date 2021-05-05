@@ -486,9 +486,11 @@ function addPacket(packet) {
 function colorNode(selectedNode, color)
 {
   console.log(selectedNode)
-  selectedNode.style('width', 80);
-  selectedNode.style('height', 80);
-  selectedNode.style('background-color', color)
+  selectedNode.style('shape', 'ellipse')
+  selectedNode.style('width', 90);
+  selectedNode.style('height', 90);
+  selectedNode.style('border-width', 4)
+  selectedNode.style('border-color', color)
 
 }
 
