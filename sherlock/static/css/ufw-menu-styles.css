@@ -1,5 +1,6 @@
 .ruleListItem {
   box-sizing: border-box;
+  border-color:
 }
 
 /* Style the list (remove margins and bullets, etc) */
@@ -11,20 +12,22 @@ li.ruleListItem{
 
 /* Style the list items */
 li.ruleListItem {
-  border: 1px solid #ddd;
+  border: 1px solid #231629;
   margin-top: -1px; /* Prevent double borders */
-  background-color: #f6f6f6;
+  /*background-color: #331631;*/
+  background-image: linear-gradient(to left, #104e8b 0%, #A67FBD 100%);
   padding: 12px;
   text-decoration: none;
   font-size: 18px;
-  color: black;
+  color: #eee;
   display: block;
   position: relative;
 }
 
 /* Add a light grey background color on hover */
 .ruleListItem:hover {
-  background-color: #eee;
+  color:
+  background-color: #331631;
 }
 
 /* Style the close button (span) */
@@ -35,21 +38,26 @@ li.ruleListItem {
   right: 0%;
   padding: 12px 16px;
   transform: translate(0%, -50%);
+  color:#bbb;
 }
 
-.close:hover {background: #bbb;}
+.close:hover {
+    background: #bbb;
+    color: red;
+    }
 
 #ruleheader {
-  width: 400px;
+  width: 100%;
+  display:inline-block;
   padding: 14px;
   margin-bottom: 15px;
   font-size: 1rem;
-  cursor:move;
   z-index:10;
   background-color: #2196F3;
   color: #fff;
   background-image: linear-gradient(to top, #104e8b 0%, #ab82bf 100%);
   border-radius: 4px;
+  font-size: 22px;
 }
 
 .main__containerUFW {
@@ -61,6 +69,20 @@ li.ruleListItem {
     height: 90vh;
     background-color: #141414;
     z-index: 1;
-    max-width: 1300px;
     padding: 0 50px;
+}
+
+.header__container {
+    height:50px;
+    width:100%;
+    align:left;
+}
+
+
+.rule__container {
+	/*background-color: #10133A;*/
+	background-image: linear-gradient(to left top, #104e8b 0%, #10133A 100%);
+	height: 75%;
+	margin-top: 50px;
+	border-radius: 4px;
 }
