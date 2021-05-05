@@ -8,7 +8,6 @@ var MY_SYSTEM;
 var trafficColors = ['green', 'blue', 'yellow', 'orange','purple','red']
 const COLOR_COUNT = trafficColors.length-1;
 
-
 const layoutOptions = {
   autounselectify: true,
   avoidOverlap: true,
@@ -23,7 +22,13 @@ const layoutOptions = {
 
 var MY_IP = '10.0.2.15';
 
+// Prepare an empty logger instance
+let LOGGER;
+
 document.addEventListener('DOMContentLoaded', function () {
+
+    // Create a logger instance
+    LOGGER = new Logs();
 
     // Get the data injected inside the div #data and parse it as JSON
     const dataNode = document.getElementById("data");
@@ -86,7 +91,8 @@ document.addEventListener('DOMContentLoaded', function () {
           
           let textArea = document.createElement('textarea')
           // ipaddr = nodeMap.$(`[id="${packet.source_ip_address}"]`) 
-          let ipaddr = ele.data('id') 
+          let ipaddr = ele.data('id');
+          console.log(typeof ipaddr)
           textArea.value = ipaddr 
           textArea.style.top="0";
           textArea.style.left = "0";
@@ -97,16 +103,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
           try{
               let successful = document.execCommand('copy')
-
           }
           catch(err){
               console.error('fallback oops did not copy', err)
-
           }
           document.body.removeChild(textArea)
-
-
         }
+
+      },
+      {
+        content: 'Watch network traffic',
+        select: function(ele){
+          let ipaddr = ele.data('id')
+          const logsTitle = document.getElementById('network-logs-ip-address');
+          logsTitle.innerText = ipaddr;
+          LOGGER.setVisibility(true);
+          LOGGER.setIp(ipaddr);
+        }, 
 
       },
       {
@@ -176,20 +189,13 @@ document.addEventListener('DOMContentLoaded', function () {
         content: 'Inspect Connection',
         select: function(ele){
 
-
         edgeLabel = ele.data('id') ;
         sourceIP = ele.data('source');
         targetIP = ele.data('target');
         edgePort = ele.data('label');
         edgeProtocol = ele.data('protocol');
-
-
-
         console.log(edgeLabel, sourceIP, targetIP, edgePort, edgeProtocol)
-
         createInspectionDiv(edgeLabel, sourceIP, targetIP, edgeProtocol, edgePort);
-
-
         }
       },
       {
@@ -271,20 +277,6 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 });
 
-/*
-function createEdges(packet) {
-  return {
-    group: 'edges',
-    data: {
-      id: createEdgeId(packet),
-      source: packet.source_ip_address,
-      target: packet.destination_ip_address,
-      label: packet.source_port,
-      protocol: packet.protocol,
-    }
-  }
-}
-*/
 function createEdge(source, target, port, protocol) {
   return {
     group: 'edges',
@@ -309,14 +301,6 @@ function handleMessage(message)
 
 function createNode(id) {
   var NODE_SYSTEM = 'default';
-  //$.ajax({
-  //    type: 'GET',
-  //    url: '/network-os/'.concat(id),
-  //    data: {ip: id}
-  //}).done(function(o){
-  //  NODE_SYSTEM = o;
-  //  console.log('node os: ' + NODE_SYSTEM);
-  //});
   return {
     group: 'nodes',
     data: {
@@ -332,7 +316,6 @@ function createNode(id) {
           width:65,
           height: 65, 
           'background-image': '../../static/images/newdefaulticon.png',
-          //'background-image' : getIcon(NODE_SYSTEM),
           'background-color': '#F9F9F9'
           
     }
@@ -382,8 +365,13 @@ function addPacket(packet) {
   const destinationIP = packet.destination_ip_address;
   const protocol = packet.protocol;
 
+  const loggerIP = LOGGER.getIp();
+  // Add packet to the logger
+  if (sourceIP === loggerIP || destinationIP === loggerIP) {
+    LOGGER.addPacket(packet);
+  }
+
   // If the FIN flag has been set, we should remove the node (the connection is closed)
-  console.log(packet.flags);
   if (closeConnectionFlag) {
     if (destinationIP != "10.0.2.15" && destinationIP != "127.0.0.1") {
       removeNode(packet, packet.destination_ip_address)
