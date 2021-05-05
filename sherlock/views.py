@@ -157,7 +157,7 @@ def portpage(request, ajaxip):
 
 
 def tutorial_begin(request):
-    return render(request, 'homepage/splash-page.html')
+    return render(request, 'homepage/tutorial-begin.html')
 
 def tutpage1(request):
     return render(request, 'tutorial/tutpage1.html')

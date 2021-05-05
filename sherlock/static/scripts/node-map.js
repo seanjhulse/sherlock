@@ -317,6 +317,7 @@ function createNode(id) {
           height: 65, 
           'background-image': '../../static/images/newdefaulticon.png',
           'background-color': '#F9F9F9'
+          
     }
   }
 }
@@ -333,7 +334,7 @@ function createLocalHost(id) {
          width: 100,
          height: 100,
         'background-image': getIcon(MY_SYSTEM),
-        'background-color': '#F9F9F9'
+        'background-color': '#F9F9F9',
     }
   }
 }
@@ -389,13 +390,19 @@ function addPacket(packet) {
     if (destinationNode.length <= 0) {
       nodeMap.add(createNode(destinationIP));
     }
-
     const port = packet.source_port ? packet.source_port : packet.destination_port;
 
     // Create the intermediary nodes (if they exist)
     const sourceHostName = domainFromUrl(packet.source_host_name);
     const destinationHostName = domainFromUrl(packet.destination_host_name);
    
+    if(port == "443"){
+
+        colorNode(sourceNode, 'green')
+    }
+    else if(port == "80"){
+      colorNode(sourceNode, 'red')
+    }
     const sourceHostNode = nodeMap.$(`[id="${sourceHostName}"]`);
     const destinationHostNode = nodeMap.$(`[id="${destinationHostName}"]`);
     if (sourceHostName !== undefined && sourceHostName !== 'undefined' && sourceHostNode.length <= 0) {
@@ -463,6 +470,18 @@ function addPacket(packet) {
     // colorEdge(uniqueNodeName, packet.source_ip_address);
   }
 }
+
+function colorNode(selectedNode, color)
+{
+  console.log(selectedNode)
+  selectedNode.style('shape', 'ellipse')
+  selectedNode.style('width', 90);
+  selectedNode.style('height', 90);
+  selectedNode.style('border-width', 4)
+  selectedNode.style('border-color', color)
+
+}
+
 
 function colorEdge(source, target) {
   var edge = nodeMap.getElementById(source + '->' + target);
@@ -533,8 +552,6 @@ function domainFromUrl(url) {
 
   return undefined;
 }
-
-
 function getIcon(os) {
     _osIcon = "../../static/images/newdefaulticon.png";
 
@@ -561,4 +578,3 @@ function getIcon(os) {
 
     return _osIcon
 }
-
