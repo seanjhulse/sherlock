@@ -61,7 +61,7 @@ createRuleDivs = function(rules, ruleArray){
         //add close button to rule list item
         closeButton = document.createElement("span");
         closeButton.className = "close";
-        closeButton.innerHTML = "X";
+        closeButton.innerHTML = "Delete Rule";
         closeButton.addEventListener("click", function() {
             this.parentElement.style.display = 'none';
             parID = this.parentElement.id;
