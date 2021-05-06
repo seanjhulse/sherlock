@@ -8,7 +8,6 @@ var MY_SYSTEM;
 var trafficColors = ['green', 'blue', 'yellow', 'orange','purple','red']
 const COLOR_COUNT = trafficColors.length-1;
 
-
 const layoutOptions = {
   autounselectify: true,
   avoidOverlap: true,
@@ -23,7 +22,13 @@ const layoutOptions = {
 
 var MY_IP = '10.0.2.15';
 
+// Prepare an empty logger instance
+let LOGGER;
+
 document.addEventListener('DOMContentLoaded', function () {
+
+    // Create a logger instance
+    LOGGER = new Logs();
 
     // Get the data injected inside the div #data and parse it as JSON
     const dataNode = document.getElementById("data");
@@ -86,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
           
           let textArea = document.createElement('textarea')
           // ipaddr = nodeMap.$(`[id="${packet.source_ip_address}"]`) 
-          let ipaddr = ele.data('id') 
+          let ipaddr = ele.data('id');
           console.log(typeof ipaddr)
           textArea.value = ipaddr 
           textArea.style.top="0";
@@ -98,16 +103,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
           try{
               let successful = document.execCommand('copy')
-
           }
           catch(err){
               console.error('fallback oops did not copy', err)
-
           }
           document.body.removeChild(textArea)
-
-
         }
+
+      },
+      {
+        content: 'Watch network traffic',
+        select: function(ele){
+          let ipaddr = ele.data('id')
+          const logsTitle = document.getElementById('network-logs-ip-address');
+          logsTitle.innerText = ipaddr;
+          LOGGER.setVisibility(true);
+          LOGGER.setIp(ipaddr);
+        }, 
 
       },
       {
@@ -177,20 +189,13 @@ document.addEventListener('DOMContentLoaded', function () {
         content: 'Inspect Connection',
         select: function(ele){
 
-
         edgeLabel = ele.data('id') ;
         sourceIP = ele.data('source');
         targetIP = ele.data('target');
         edgePort = ele.data('label');
         edgeProtocol = ele.data('protocol');
-
-
-
         console.log(edgeLabel, sourceIP, targetIP, edgePort, edgeProtocol)
-
         createInspectionDiv(edgeLabel, sourceIP, targetIP, edgeProtocol, edgePort);
-
-
         }
       },
       {
@@ -272,21 +277,7 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 });
 
-
-function createEdges(packet) {
-  return {
-    group: 'edges',
-    data: {
-      id: createEdgeId(packet),
-      source: packet.source_ip_address,
-      target: packet.destination_ip_address,
-      label: packet.source_port,
-      protocol: packet.protocol,
-    }
-  }
-}
-
-function createEdge(source, target, port) {
+function createEdge(source, target, port, protocol) {
   return {
     group: 'edges',
     data: {
@@ -294,6 +285,7 @@ function createEdge(source, target, port) {
       source: source,
       target: target,
       label: port,
+      protocol: protocol,
     }
   }
 }
@@ -309,14 +301,6 @@ function handleMessage(message)
 
 function createNode(id) {
   var NODE_SYSTEM = 'default';
-  //$.ajax({
-  //    type: 'GET',
-  //    url: '/network-os/'.concat(id),
-  //    data: {ip: id}
-  //}).done(function(o){
-  //  NODE_SYSTEM = o;
-  //  console.log('node os: ' + NODE_SYSTEM);
-  //});
   return {
     group: 'nodes',
     data: {
@@ -331,9 +315,9 @@ function createNode(id) {
           shape: 'roundrectangle',
           width:65,
           height: 65, 
-          'background-image': '../../static/images/default-icon.png',
-          //'background-image' : getIcon(NODE_SYSTEM),
+          'background-image': '../../static/images/newdefaulticon.png',
           'background-color': '#F9F9F9'
+          
     }
   }
 }
@@ -350,7 +334,7 @@ function createLocalHost(id) {
          width: 100,
          height: 100,
         'background-image': getIcon(MY_SYSTEM),
-        'background-color': '#F9F9F9'
+        'background-color': '#F9F9F9',
     }
   }
 }
@@ -379,9 +363,15 @@ function addPacket(packet) {
   const closeConnectionFlag = packet.flags === "FIN";
   const sourceIP = packet.source_ip_address;
   const destinationIP = packet.destination_ip_address;
+  const protocol = packet.protocol;
+
+  const loggerIP = LOGGER.getIp();
+  // Add packet to the logger
+  if (sourceIP === loggerIP || destinationIP === loggerIP) {
+    LOGGER.addPacket(packet);
+  }
 
   // If the FIN flag has been set, we should remove the node (the connection is closed)
-  console.log(packet.flags);
   if (closeConnectionFlag) {
     if (destinationIP != "10.0.2.15" && destinationIP != "127.0.0.1") {
       removeNode(packet, packet.destination_ip_address)
@@ -400,13 +390,19 @@ function addPacket(packet) {
     if (destinationNode.length <= 0) {
       nodeMap.add(createNode(destinationIP));
     }
-
     const port = packet.source_port ? packet.source_port : packet.destination_port;
 
     // Create the intermediary nodes (if they exist)
     const sourceHostName = domainFromUrl(packet.source_host_name);
     const destinationHostName = domainFromUrl(packet.destination_host_name);
    
+    if(port == "443"){
+
+        colorNode(sourceNode, 'green')
+    }
+    else if(port == "80"){
+      colorNode(sourceNode, 'red')
+    }
     const sourceHostNode = nodeMap.$(`[id="${sourceHostName}"]`);
     const destinationHostNode = nodeMap.$(`[id="${destinationHostName}"]`);
     if (sourceHostName !== undefined && sourceHostName !== 'undefined' && sourceHostNode.length <= 0) {
@@ -416,7 +412,7 @@ function addPacket(packet) {
       var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + sourceHostName}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(packet.source_ip_address, sourceHostName, port);
+        edges = createEdge(packet.source_ip_address, sourceHostName, port, protocol);
         nodeMap.add(edges);
       }
 
@@ -424,7 +420,7 @@ function addPacket(packet) {
       edgeNode = nodeMap.$(`[id="${sourceHostName + '->' + packet.destination_ip_address}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(sourceHostName, packet.destination_ip_address, port);
+        edges = createEdge(sourceHostName, packet.destination_ip_address, port, protocol);
         nodeMap.add(edges);
       }
     } else if (destinationHostName !== undefined && destinationHostName !== 'undefined' && destinationHostNode.length <= 0) {
@@ -434,7 +430,7 @@ function addPacket(packet) {
       var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + destinationHostName}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(packet.source_ip_address, destinationHostName, port);
+        edges = createEdge(packet.source_ip_address, destinationHostName, port, protocol);
         nodeMap.add(edges);
       }
 
@@ -442,7 +438,7 @@ function addPacket(packet) {
       edgeNode = nodeMap.$(`[id="${destinationHostName + '->' + packet.destination_ip_address}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(destinationHostName, packet.destination_ip_address, port);
+        edges = createEdge(destinationHostName, packet.destination_ip_address, port, protocol);
         nodeMap.add(edges);
       }
     } else {
@@ -450,7 +446,7 @@ function addPacket(packet) {
       var edgeNode = nodeMap.$(`[id="${packet.source_ip_address + '->' + packet.destination_ip_address}"]`)
       if (edgeNode.length <= 0)
       {
-        edges = createEdge(packet.source_ip_address, packet.destination_ip_address, port);
+        edges = createEdge(packet.source_ip_address, packet.destination_ip_address, port, protocol);
         nodeMap.add(edges);
       }
 
@@ -474,6 +470,18 @@ function addPacket(packet) {
     // colorEdge(uniqueNodeName, packet.source_ip_address);
   }
 }
+
+function colorNode(selectedNode, color)
+{
+  console.log(selectedNode)
+  selectedNode.style('shape', 'ellipse')
+  selectedNode.style('width', 90);
+  selectedNode.style('height', 90);
+  selectedNode.style('border-width', 4)
+  selectedNode.style('border-color', color)
+
+}
+
 
 function colorEdge(source, target) {
   var edge = nodeMap.getElementById(source + '->' + target);
@@ -520,21 +528,6 @@ function resolveProtocol(protocolCode, protocolArray, colorArray){
 
   output = colorArray[colorIndex];
 
-  /*
-  switch (protocolCode){
-      case "TCP":
-          output = "green"
-          break;
-      case "UDP":
-          output = "blue";
-          break;
-      case "FTP":
-          output = "yellow";
-          break;
-      default:
-          output = "red";
-          break;
-  }*/
   return output;
 }
 
@@ -559,95 +552,29 @@ function domainFromUrl(url) {
 
   return undefined;
 }
-
-//log unique protocol values
-function uniqueProtocol(protocolCode, uniqueArray,colorArray) {
-    if (uniqueArray.indexOf(protocolCode)==-1){
-        uniqueArray.push(protocolCode);
-        console.log(uniqueArray);
-        updateLegend(protocolCode,uniqueArray,colorArray)
-    }
-}
-
-function updateLegend(protocolCode, protocolArray, colorArray) {
-    var node = document.createElement('p');
-    node.appendChild(document.createTextNode(protocolCode));
-    node.style.cssText = "color:" + colorArray[protocolArray.indexOf(protocolCode)];
-    var element = document.getElementById('legend');
-    element.appendChild(node);
-
-}
-
-
 function getIcon(os) {
-    _osIcon = "../../static/images/default-logo.png";
+    _osIcon = "../../static/images/newdefaulticon.png";
 
     switch (os) {
 
         case "Windows":
-            _osIcon = "../../static/images/windows-10-icon.png";
+            _osIcon = "../../static/images/newwindowsicon.png";
             break;
         case "Darwin":
-            _osIcon = "../../static/images/ios-icon.png";
+            _osIcon = "../../static/images/newmacicon.png";
             break;
         case "Linux":
-            _osIcon = "../../static/images/linux-icon.png";
+            _osIcon = "../../static/images/newlinuxicon.png";
             break;
         case "Android":
-            _osIcon = "../../static/images/android-icon.png";
+            _osIcon = "../../static/images/newandroidicon.png";
             break;
         case "Chrome OS":
-            _osIcon = "../../static/images/chrome-os-icon.png";
+            _osIcon = "../../static/images/newchromeicon.png";
             break;
         default:
-            _osIcon = "../../static/images/default-icon.png";
+            _osIcon = "../../static/images/newdefaulticon.png";
     }
 
     return _osIcon
-  }
-function createInspectionDiv(label, source, target, protocol, port){
-    var container = document.createElement("div");
-    var menuid = label + "inspectionmenu";
-    container.className = "draggable widget";
-    container.id = menuid;
-	  container.style.top = '500px';
-	  container.style.left = '1000px';
-
-    var header = document.createElement("div");
-    header.id = label + "inspectionmenuheader";
-    header.className = "headerbar";
-    header.innerHTML = protocol + " on " + port;
-
-    var closeButton = document.createElement("button");
-    closeButton.className = 'closeButton';
-    closeButton.innerHTML = "X";
-    closeButton.addEventListener("click", function() {
-        this.parentElement.remove()
-    });
-
-    container.appendChild(header);
-    container.appendChild(closeButton);
-
-    pSourceIP = document.createElement('p');
-    pSourceIP.innerHTML = "Source IP: " + source;
-    pSourceIP.style.textAlign = "left";
-    container.appendChild(pSourceIP);
-
-    pTargetIP = document.createElement('p');
-    pTargetIP.innerHTML = "Destination IP: " + target;
-    pTargetIP.style.textAlign = "left";
-    container.appendChild(pTargetIP);
-
-
-    document.body.appendChild(container);
-
-
-    for (i = 0; i<draggableElements.length; i++){
-        dragElement(draggableElements[i]);
-    }
-
 }
-function closeDiv(ele){
-    console.log("closing " + ele);
-    document.getElementById(ele).remove();
-  }

@@ -13,9 +13,11 @@
 	<script src="{% static 'scripts/cytoscape-cxtmenu.js' %}"></script>
 	<script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
 	<script src="{% static 'scripts/cytoscape-cola.js' %}" type="text/javascript"></script>
+    <script src="{% static 'scripts/sherlock-widgets.js' %}" type="text/javascript"></script>
 	<script src="{% static 'scripts/node-map.js' %}" type="text/javascript"></script>
-	<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+	<script src="{% static 'scripts/logs.js' %}" type="text/javascript"></script>
 
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 	<link rel="stylesheet" href="{% static 'css/cyto-styles.css' %}" />
 </head>
 
@@ -51,13 +53,22 @@
 		<!--<div id = "closeButton">X</div>-->
 	</div>
 
+	<!-- Network Logs -->
+	<div id="network-logs" class="network-logs-wrapper draggable">
+		<div class="network-logs-inner-wrapper">
+			<button class="main__btn" id="hide-logs">Exit</button>
+			<h2><span id="network-logs-ip-address"></span></h2>
+			<div id="network-logs-container" class="network-logs-container"></div>
+		</div>
+	</div>
+
     <div id="data" data-context="{{ context }}" />
 
 	<!-- Loader -->
 	<div id='urlLoader'></div>
 
 	<!-- Main Section -->
-	<div class="main">
+	<div class="main node-map-main">
 		<div id="node-map" class = 'node-map'></div>
 		<div class="main__container">
 			<div class="main__content">

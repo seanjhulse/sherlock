@@ -7,7 +7,7 @@
     <!--Overall Styling for Webpage-->
     {% load static %}
     <!-- favicon -->
-      <link rel = "shortcut icon" type="image/png" href = "{% static 'images/favicon.ico' %}" />
+    <link rel = "shortcut icon" type="image/png" href = "{% static 'images/favicon.ico' %}" />
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 
     <!--Google Font-->
@@ -16,9 +16,10 @@
       href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    <script src="{% static 'scripts/visited-cookie.js' %}" type="text/javascript"></script>
   </head>
 
-  <body>
+  <body onload="checkCookie()">
     <!-- Navigation Bar -->
     <nav class="navbar">
       <div class="navbar__container">
@@ -50,10 +51,9 @@
           <h1>SherLOCK</h1>
           <h2>Technology</h2>
           <p>For Your Holmes Network</p>
-
           <!--Do something with this button-->
-          <button class="main__btn">
-            <a href="/splash-page">Get Started</a>
+          <button class="main__btn" href="">
+            <a id="get-started" href="/tutorial-begin">Get Started</a>
           </button>
         </div>
 
@@ -72,5 +72,13 @@
 
     <!-- Nother Section -->
     <script src="{% static 'scripts/app.js' %}" type="text/javascript"></script>
+
+    <!-- Cookie Check 
+    <script type="text/javascript">
+      if( document.cookie.indexOf("cookiename=") < 0) {
+        alert("Cookie not found, redirecting you.");
+        location.href = "newpage.html";
+      }
+    </script>-->
   </body>
 </html>
