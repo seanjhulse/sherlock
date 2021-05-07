@@ -7,7 +7,7 @@ Welcome to **Sherlock**, a simple and easy-to-use network security visualization
 
 This web application is ideal for anyone who seeks to manage the security of their home network. To view the information, click the "Get Started" button!
 
-![](/images/sherlock_nodemap.png)
+![](/images/node-map.png)
 
 
 To install the application, please adhere to the following steps:
