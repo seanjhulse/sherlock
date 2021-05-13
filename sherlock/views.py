@@ -10,6 +10,7 @@ from platform import system
 import datetime
 import socket
 import nmap
+import nmap3
 
 from .osdata import get_op_sys, get_ip, map_net, scan_network, get_vendor
 import pyufw as ufw
@@ -104,17 +105,22 @@ def local_ports(request, ip="127.0.0.1", portrange=65535):
     Returns:
       comma separated list in HttpResponse
     """
+    nmap_scanner = nmap3.Nmap()
+    result = nmap_scanner.scan_top_ports(ip, args="--top-ports 10")
+    
     open_ports = []
 
-    for port in range(0,portrange):
-        test_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        result = test_socket.connect_ex((ip, port))
+    for host in result:
+        print('Host: %s' % host)
+        if "ports" in result[host]:
+            for port in result[host]["ports"]:
+                if port["state"] == "open":
+                    print('----------')
+                    print('Protocol : %s' % port["protocol"])
+                    print ('port : %s\tstate : %s' % (port["portid"], port['state']))
+                    print(port)
+                    open_ports.append(port)
 
-        if result == 0:
-            open_ports.append(port)
-        test_socket.close()
-
-    # return HttpResponse(",".join(str(i) for i in open_ports))
     return open_ports
 
 def web_sockets_example(request):
@@ -146,15 +152,15 @@ def localpage(request, ajaxip):
     return render(request, 'localpage/localhost.html', {'context': json.dumps(context)})
 
 
-def portpage(request, ajaxip):
-    print('Getting ports...')
+def portpage(request):
+    return render(request, 'host-node/host-node.html')
 
-    ports = local_ports(request)
-    my_ip = ajaxip
-    ports = json.dumps(ports)
-    context = {'ports': ports, 'os': system(), 'ip': my_ip }
-    return render(request, 'host-node/host-node.html', {'context' : json.dumps(context)})
-
+def scan_ports(request, ajaxip):
+    print('Getting ports for host... {}'.format(ajaxip))
+    ports = local_ports(request, ajaxip, 443)
+    print(ports)
+    context = {'ports': ports, 'os': system(), 'ip': ajaxip }
+    return JsonResponse({"port_data": context})
 
 def tutorial_begin(request):
     return render(request, 'homepage/tutorial-begin.html')
