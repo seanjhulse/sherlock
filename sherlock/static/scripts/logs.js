@@ -43,14 +43,12 @@ class Logs {
     }
 
     addPacket(packet) {
-        if (packet.payload) {
-            this.logs.innerHTML += `<div style="padding-bottom: 10px;">`;
-            this.logs.innerHTML += `<p style="font-weight: bold; color: antiquewhite;">` + packet.source_ip_address + ":" + packet.source_port + " -> " + packet.destination_ip_address + ":" + packet.destination_port + "</p>";
-            console.log(packet.payload);
-            this.logs.innerHTML += "<p>" + packet.payload + "</p>";
-            this.logs.innerHTML += "</div>";
-            this.scrollToBottom();
-        }
+        this.logs.innerHTML += `<div style="padding-bottom: 10px;">`;
+        this.logs.innerHTML += `<p style="font-weight: bold; color: antiquewhite;">` + packet.source_ip_address + ":" + packet.source_port + " -> " + packet.destination_ip_address + ":" + packet.destination_port + "</p>";
+        this.logs.innerHTML += `<p style="font-weight: bold; color: antiquewhite;">` + packet.protocol + "</p>";
+        this.logs.innerHTML += "<p>" + packet.payload + "</p>";
+        this.logs.innerHTML += "</div>";
+        this.scrollToBottom();
     }
 
     scrollToBottom() {

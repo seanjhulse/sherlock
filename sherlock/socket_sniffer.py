@@ -121,5 +121,5 @@ class SocketSniffer:
             pass
 
     def sniff_packets(self):
-        # sniff(prn=self.packet_callback, filter="tcp || udp", store=False)
-        sniff(prn=self.packet_callback, filter="tcp port 80", store=False)
+        sniff(prn=self.packet_callback, filter="tcp || udp", store=False)
+        # sniff(prn=self.packet_callback, filter="tcp", store=False)

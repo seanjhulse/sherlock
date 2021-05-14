@@ -125,25 +125,9 @@ document.addEventListener('DOMContentLoaded', function () {
       {
         content: 'Get ports',
         select: function(ele){
-
           let ipaddr = ele.data('id')
           sessionStorage.setItem('ipaddr', ipaddr);
-
-          let nextPage = "/portpage/".concat(ipaddr);
-          // let nextPage = "/host-node/".concat(ipaddr);
-          $.ajax({
-              type: 'GET',
-              url: nextPage, 
-              data: {
-                ajaxip: ipaddr 
-              },
-              success: function(data) {
-                  window.location.href = nextPage;  
-              },
-              headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-              }
-          }); 
+          window.open("/portpage/", '_blank').focus();
         }, 
 
       },
