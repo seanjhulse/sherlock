@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Tutorial - Context Menu</title>
+    <title>Tutorial - Ending</title>
 
     {% load static %}
     <!--Example of linking to javascript-->
@@ -13,9 +13,10 @@
     <!--Google Font-->
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap" rel="stylesheet"/>
+    <script src="{% static 'scripts/visited-cookie.js' %}" type="text/javascript"></script>
   </head>
   
-  <body>
+  <body onload="tutorialCompleted()">
     <!-- Navigation Bar -->
     <nav class="navbar">
       <div class="navbar__container">
@@ -47,19 +48,20 @@
     </nav>
 
     <div class="info_section">
-      <div style="position: relative; width: 1440px; height: 4650px;" class="info_box">
+      <div style="position: relative; width: 520px; height: 500px;" class="info_box">
           <span></span>
           <div class="info_content">
-              <h2>SherLOCK - Network Traffic</h2>
+              <h2>End of Tutorial</h2>
               <p>
                 <br>
-                Our node map is capable of visually displaying traffic represented by an alteration the color of the edge as packets are being sent and received from a node.
-                <br>
-                It would be more interesting if we could 
+                Congratulations on making it to the end of the tutorial!
+                <br><br>
+                You should now be able to take full advantage of the features SherLOCK has to offer.
+                <br><br>
+                Stay safe out there!
                 <br><br>
               </p>
-              <a href="/tutpage4">Previous</a>
-              <a href="/endtut">Next</a>
+              <a href="/node-map">Proceed to Node Map</a>
           </div>
       </div>
     </div>

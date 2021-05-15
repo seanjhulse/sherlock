@@ -180,6 +180,9 @@ def tutpage4(request):
 def tutpage5(request):
     return render(request, 'tutorial/tutpage5.html')
 
+def endtut(request):
+    return render(request, 'tutorial/endtut.html')
+
 def ufw_block(request,blocktype,blocktarget):
 
     if (blocktype == "in") | (blocktype == "out"):
