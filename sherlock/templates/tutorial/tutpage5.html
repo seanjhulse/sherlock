@@ -47,7 +47,7 @@
     </nav>
 
     <div class="info_section">
-      <div style="position: relative; width: 1440px; height: 4650px;" class="info_box">
+      <div style="position: relative; width: 1440px; height: 2400px;" class="info_box">
           <span></span>
           <div class="info_content">
               <h2>SherLOCK - Network Traffic</h2>
@@ -58,8 +58,21 @@
                 It would be more interesting if we could inspect what information is being passed by the packets.
                 <br><br>
                 That's what the "Watch Network Traffic" feature accomplishes.
-                This feature grants the user the ability to inspect the packet header
+                This feature grants the user the ability to inspect the packet header of packets sent over an http connection.
+                <br>
+                Due to the encrypted nature of packets being sent over an https connection, we do not provide the ability to display the contents of the https packet header as the 
+                output would be unintelligible encrypted junk.
+                <br>
+                <img src="{% static 'images/nodemap-networktraffichttps.png' %}"/>
                 <br><br>
+                To access the Network Traffic Console, right-click on the node you would like to inspect as seen earlier in the tutorial and move your cursor to the 
+                bottom-right of the context menu and releasing displays a console in the bottom-righthand corner of the screen as shown in the below image:
+                <br>
+                <img width="1280px" height="720px" src="{% static 'images/nodemap-contextmenuselection4.png' %}"/>
+                <br>
+                <img width="1280px" height="720px" src="{% static 'images/nodemap-networktraffic.png' %}"/>
+                <br><br>
+
               </p>
               <a href="/tutpage4">Previous</a>
               <a href="/endtut">Next</a>
