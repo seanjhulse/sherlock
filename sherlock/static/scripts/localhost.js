@@ -32,9 +32,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var _style = [{
         selector: '#host', //#tag name to select node
         style: {
-            shape: 'roundrectangle',
-            width: 128,
-            height: 128,
+            shape: 'ellipse',
+            width: 100,
+            height: 100,
             'background-image': getIcon(data.os),
             'background-color': _nodeColor,
             label: nodeMapIP,
@@ -77,9 +77,9 @@ document.addEventListener('DOMContentLoaded', function () {
             _style.push({
                 selector: `#other-${stringifiedIp}`,
                 style: {
-                    shape: 'roundrectangle',
-                    width: 125,
-                    height: 125,
+                    shape: 'ellipse',
+                    width: 100,
+                    height: 100,
                     'background-image': getIcon(firstOSMatch),
                     'background-color': _nodeColor,
                     label: ip + " - " + firstOSMatch,

@@ -36,9 +36,9 @@ document.addEventListener('DOMContentLoaded', function () {
             var _style = [{
                 selector: '#host', //#tag name to select node
                 style: {
-                    shape: 'roundrectangle',
-                    width: 128,
-                    height: 128,
+                    shape: 'ellipse',
+                    width: 100,
+                    height: 100,
                     'background-image': getIcon(data.os),
                     'background-color': _nodeColor,
                     label: _hostAddress,
@@ -51,9 +51,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 _style.push({
                     selector: '#port' + ports[i].portid + '-' + ports[i].protocol,
                     style: {
-                        shape: 'roundrectangle',
-                        width: 85,
-                        height: 85,
+                        shape: 'ellipse',
+                        width: 100,
+                        height: 100,
                         'background-image': _portIcon,
                         'background-color': _nodeColor,
                         label: 'Port ' + ports[i].portid + ' ' + (ports[i].protocol).toUpperCase(),
