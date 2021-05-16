@@ -11,7 +11,7 @@ const COLOR_COUNT = trafficColors.length-1;
 const layoutOptions = {
   autounselectify: true,
   avoidOverlap: true,
-  animate: true,
+  animate: false,
   maxSimulationTime: 4000,
   refresh: 1,
   nodeDimensionsIncludeLabels: true,
