@@ -296,11 +296,11 @@ function createNode(id) {
       y: 0,
     },
     style: {
-          shape: 'roundrectangle',
+          shape: 'ellipse',
           width:65,
           height: 65, 
           'background-image': '../../static/images/newdefaulticon.png',
-          'background-color': '#F9F9F9'
+          'background-color': '#141414'
           
     }
   }
@@ -314,11 +314,11 @@ function createLocalHost(id) {
       label: 'This Computer'
     },
     style: {
-        shape: 'roundrectangle',
+         shape: 'ellipse',
          width: 100,
          height: 100,
         'background-image': getIcon(MY_SYSTEM),
-        'background-color': '#F9F9F9',
+        'background-color': '#141414',
     }
   }
 }
@@ -459,8 +459,8 @@ function colorNode(selectedNode, color)
 {
   console.log(selectedNode)
   selectedNode.style('shape', 'ellipse')
-  selectedNode.style('width', 90);
-  selectedNode.style('height', 90);
+  selectedNode.style('width', 65);
+  selectedNode.style('height', 65);
   selectedNode.style('border-width', 4)
   selectedNode.style('border-color', color)
 
