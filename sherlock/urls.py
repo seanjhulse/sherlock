@@ -27,6 +27,7 @@ urlpatterns = [
     path('tutpage3/', views.tutpage3, name='tutpage3'),
     path('tutpage4/', views.tutpage4, name='tutpage4'),
     path('tutpage5/', views.tutpage5, name='tutpage5'),
+    path('endtut/', views.endtut, name='endtut'),
     path('block-connection/<str:blocktype>/<str:blocktarget>/',views.ufw_block, name="block-connection"),
     path('ufw-rule-manager/', views.ufw_manager, name="ufw-rule-manager"),
     path('ufw-delete-rule/<str:rule>/', views.ufw_delete_rule, name="ufw-delete-rule"),
